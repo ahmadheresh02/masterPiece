@@ -1,0 +1,81 @@
+@extends('admin.layout')
+
+@section('content')
+    <h1 class="admin-title">Companies Management</h1>
+
+    <div class="admin-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="mb-0">All Companies</h5>
+        </div>
+
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Company</th>
+                        <th>Email</th>
+                        <th>Industry</th>
+                        <th>Location</th>
+                        <th>Verification</th>
+                        <th>Registered</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($companies as $company)
+                        <tr>
+                            <td>{{ $company->id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    @if ($company->logo_url)
+                                        <img src="{{ $company->logo_url }}" alt="{{ $company->name }}" class="rounded me-2"
+                                            style="width: 40px; height: 40px; object-fit: cover;">
+                                    @else
+                                        <div class="user-avatar">
+                                            {{ substr($company->name, 0, 1) }}
+                                        </div>
+                                    @endif
+                                    {{ $company->name }}
+                                </div>
+                            </td>
+                            <td>{{ $company->email }}</td>
+                            <td>{{ $company->industry ?? 'N/A' }}</td>
+                            <td>{{ $company->location ?? 'N/A' }}</td>
+                            <td>
+                                @if ($company->is_verified)
+                                    <span class="badge bg-success">Verified</span>
+                                @else
+                                    <span class="badge bg-warning">Pending</span>
+                                @endif
+                            </td>
+                            <td>{{ $company->created_at->format('M d, Y') }}</td>
+                            <td class="action-buttons">
+                                <a href="{{ route('admin.companies.show', $company) }}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                <form action="{{ route('admin.companies.destroy', $company) }}" method="POST"
+                                    class="d-inline"
+                                    onsubmit="return confirm('Are you sure you want to delete this company?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="text-center">No companies found</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            {{ $companies->links() }}
+        </div>
+    </div>
+@endsection

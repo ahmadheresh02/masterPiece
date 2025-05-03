@@ -18,9 +18,15 @@ class Application extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Renamed relationship to match how it's being used throughout the app
+    public function internshipListing()
+    {
+        return $this->belongsTo(InternshipListing::class, 'listing_id');
+    }
+
+    // Keep the old relationship method for backward compatibility
     public function listing()
     {
-        return $this->belongsTo(InternshipListing::class);
+        return $this->belongsTo(InternshipListing::class, 'listing_id');
     }
-    
 }
