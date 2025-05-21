@@ -11,6 +11,24 @@ class InternshipListing extends Model
     /** @use HasFactory<\Database\Factories\InternshipListingFactory> */
     use HasFactory, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'title',
+        'description',
+        'location',
+        'duration',
+        'requirements',
+        'application_deadline',
+        'skills_required',
+        'is_remote',
+        'is_active',
+        'company_id'
+    ];
+
     protected $casts = [
         'is_remote' => 'boolean',
         'is_active' => 'boolean',

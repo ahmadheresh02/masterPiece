@@ -2,32 +2,63 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanyDashboardController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\CompanyController as AdminCompanyController;
 use App\Http\Controllers\Admin\InternshipListingController as AdminInternshipListingController;
 use App\Http\Controllers\Admin\ApplicationController as AdminApplicationController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+// User Profile Routes
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
 Route::get('/company-profile', function () {
     return view('CompanyProfile');
 });
 
-Route::get('/user-profile', function () {
-    return view('UserProfile');
+// Old static route, keeping for reference but can be removed
+// Route::get('/user-profile', function () {
+//     return view('UserProfile');
+// });
+
+// Company Dashboard Routes - Protected with auth middleware for both web and company guards
+Route::middleware(['auth:web,company'])->group(function () {
+    Route::get('/company-dashboard', [CompanyDashboardController::class, 'index'])->name('company.dashboard');
+    Route::get('/company/dashboard', [CompanyDashboardController::class, 'index'])->name('company.dashboard');
 });
 
-// Company routes
 Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
 Route::get('/companies/{company}', [CompanyController::class, 'show'])->name('companies.show');
 
-Auth::routes(['register' => false]); // Disable default register route
+// Internship Routes
+Route::resource('internships', 'App\Http\Controllers\InternshipListingController');
+Route::get('/internships/{internship}/applications', [App\Http\Controllers\ApplicationController::class, 'index'])->name('internships.applications.index');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Application Routes
+Route::get('/applications', [App\Http\Controllers\ApplicationController::class, 'userApplications'])->name('applications.index');
+Route::resource('applications', 'App\Http\Controllers\ApplicationController')->except(['index']);
+Route::post('/applications/{application}/status', [App\Http\Controllers\ApplicationController::class, 'updateStatus'])->name('applications.updateStatus');
+Route::get('/internships/{internship}/apply', [App\Http\Controllers\ApplicationController::class, 'create'])->name('applications.create');
+Route::post('/internships/{internship}/apply', [App\Http\Controllers\ApplicationController::class, 'store'])->name('applications.store');
+Route::post('/internships/{internship}/quick-apply', [App\Http\Controllers\ApplicationController::class, 'quickApply'])->name('applications.quickApply');
+
+// Resume Management Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/resume-management', [App\Http\Controllers\UserController::class, 'resumeManagement'])->name('resume.management');
+    Route::post('/resume-upload', [App\Http\Controllers\UserController::class, 'uploadResume'])->name('resume.upload');
+    Route::get('/resume-download', [App\Http\Controllers\UserController::class, 'downloadResume'])->name('resume.download');
+    Route::delete('/resume-delete', [App\Http\Controllers\UserController::class, 'deleteResume'])->name('resume.delete');
+});
+
+Auth::routes(['register' => false]); // Disable default register route
 
 // Registration type selection
 Route::get('/register', function () {

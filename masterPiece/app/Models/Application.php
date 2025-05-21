@@ -9,6 +9,20 @@ class Application extends Model
 {
     /** @use HasFactory<\Database\Factories\ApplicationFactory> */
     use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'user_id',
+        'listing_id',
+        'status',
+        'cover_letter',
+        'resume_path'
+    ];
+
     protected $casts = [
         'status' => 'string'
     ];

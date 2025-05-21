@@ -123,6 +123,7 @@ class RegisterController extends Controller
             'location' => ['nullable', 'string', 'max:255'],
             'languages' => ['nullable', 'string', 'max:255'],
             'profile_picture' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'resume' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
         ]);
 
         if ($validator->fails()) {
@@ -139,6 +140,12 @@ class RegisterController extends Controller
             $profilePicturePath = $request->file('profile_picture')->store('profile-pictures', 'public');
         }
 
+        // Handle resume upload
+        $resumePath = null;
+        if ($request->hasFile('resume')) {
+            $resumePath = $request->file('resume')->store('resumes', 'public');
+        }
+
         // Create the user
         $user = User::create([
             'email' => $registration['email'],
@@ -150,13 +157,14 @@ class RegisterController extends Controller
             'major_field' => $registration['major_field'] ?? null,
             'graduation_year' => $registration['graduation_year'] ?? null,
             'has_experience' => $request->has('has_experience'),
-            'skills' => $request->skills,
+            'skills' => $request->skills ? array_map('trim', explode(',', $request->skills)) : null,
             'phone' => $request->phone,
             'profile_picture_url' => $profilePicturePath ? Storage::url($profilePicturePath) : null,
             'headline' => $request->headline,
             'about' => $request->about,
             'location' => $request->location,
-            'languages' => $request->languages,
+            'languages' => $request->languages ? array_map('trim', explode(',', $request->languages)) : null,
+            'default_resume_path' => $resumePath ? Storage::url($resumePath) : null,
         ]);
 
         // Clear the registration session data
