@@ -228,12 +228,15 @@
                                 <i class="bi bi-file-earmark-pdf text-danger me-3" style="font-size: 2rem;"></i>
                                 <div>
                                     <h6 class="mb-1">My Resume</h6>
-                                    <p class="text-muted small mb-2">Updated: {{ $user->updated_at->format('M d, Y') }}</p>
+                                    <p class="text-muted small mb-2">Updated: {{ $user->updated_at->format('M d, Y') }}
+                                    </p>
                                     <div class="d-flex gap-2">
-                                        <a href="{{ asset($user->default_resume_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <a href="{{ asset($user->default_resume_path) }}" target="_blank"
+                                            class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-eye me-1"></i> View
                                         </a>
-                                        <a href="{{ asset($user->default_resume_path) }}" download class="btn btn-sm btn-outline-secondary">
+                                        <a href="{{ asset($user->default_resume_path) }}" download
+                                            class="btn btn-sm btn-outline-secondary">
                                             <i class="bi bi-download me-1"></i> Download
                                         </a>
                                     </div>

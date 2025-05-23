@@ -428,13 +428,13 @@
                                         </a>
                                     @endif
 
-                                    <a class="dropdown-item" href="#">
+                                    <a class="dropdown-item" href="{{ route('profile.show') }}">
                                         <i class="fas fa-user fa-fw me-2"></i>
                                         {{ __('My Profile') }}
                                     </a>
 
                                     @if (!Auth::guard('company')->check())
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="{{ route('applications.index') }}">
                                             <i class="fas fa-briefcase fa-fw me-2"></i>
                                             {{ __('My Applications') }}
                                         </a>
@@ -537,115 +537,30 @@
     <!-- Modal initialization script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize all modals
-            var modals = document.querySelectorAll('.modal');
-            if (modals.length > 0) {
-                // Make sure Bootstrap is loaded
-                if (typeof bootstrap !== 'undefined') {
-                    modals.forEach(function(modal) {
-                        new bootstrap.Modal(modal);
+            // Initialize all modals using Bootstrap's modal constructor
+            var modalElements = document.querySelectorAll('.modal');
+            if (typeof bootstrap !== 'undefined') {
+                modalElements.forEach(function(modalElement) {
+                    var modal = new bootstrap.Modal(modalElement);
 
-                        // Add event listeners for each modal
-                        modal.addEventListener('hidden.bs.modal', function() {
-                            cleanupModalBackdrops();
-                        });
-                    });
-                }
-            }
-
-            // Fix for modal dialog buttons not being clickable
-            var modalButtons = document.querySelectorAll('.modal .btn');
-            if (modalButtons.length > 0) {
-                modalButtons.forEach(function(button) {
-                    button.style.pointerEvents = 'auto';
-                    button.style.zIndex = '1056'; // Higher than the modal backdrop
+                    // Store modal instance for later use
+                    modalElement._bsModal = modal;
                 });
             }
 
-            // Global event listener for modal backdrops
-            document.body.addEventListener('hidden.bs.modal', function() {
-                cleanupModalBackdrops();
-            });
-
-            // Add click listeners to all modal close buttons
-            document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(function(element) {
-                element.addEventListener('click', function() {
-                    setTimeout(cleanupModalBackdrops, 300);
-                });
-            });
-
-            // Comprehensive function to clean up modal backdrops
-            function cleanupModalBackdrops() {
-                // Remove any lingering .modal-backdrop elements
-                const backdrops = document.querySelectorAll('.modal-backdrop');
-                backdrops.forEach(backdrop => {
-                    backdrop.remove();
-                });
-
-                // Reset body styling
-                document.body.classList.remove('modal-open');
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-
-                // Add custom style to ensure no backdrop interference
-                let style = document.getElementById('modal-fix-style');
-                if (!style) {
-                    style = document.createElement('style');
-                    style.id = 'modal-fix-style';
-                    style.innerHTML = `
-                        .modal {
-                            z-index: 1055 !important;
-                        }
-                        .modal-backdrop {
-                            z-index: 1040 !important;
-                        }
-                        .modal-backdrop.fade {
-                            opacity: 0.5 !important;
-                            pointer-events: none !important;
-                        }
-                        .modal-dialog {
-                            pointer-events: all !important;
-                            z-index: 1060 !important;
-                            position: relative;
-                        }
-                        .modal.show {
-                            display: block !important;
-                            pointer-events: auto !important;
-                        }
-                        .modal-content {
-                            z-index: 1061 !important;
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
-
-                // Fix any modals that might still be shown
-                document.querySelectorAll('.modal').forEach(function(modal) {
-                    if (modal.classList.contains('show') && getComputedStyle(modal).display === 'none') {
-                        modal.classList.remove('show');
-                        modal.style.display = 'none';
-                        modal.setAttribute('aria-hidden', 'true');
-                        modal.removeAttribute('aria-modal');
+            // Add click handler for any button that opens a modal
+            document.querySelectorAll('[data-bs-toggle="modal"]').forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    var targetSelector = button.getAttribute('data-bs-target');
+                    var targetModal = document.querySelector(targetSelector);
+                    if (targetModal && targetModal._bsModal) {
+                        targetModal._bsModal.show();
+                    } else if (typeof bootstrap !== 'undefined' && targetModal) {
+                        var modal = new bootstrap.Modal(targetModal);
+                        modal.show();
                     }
                 });
-            }
-
-            // Add ESC key listener as an additional cleanup method
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape') {
-                    setTimeout(cleanupModalBackdrops, 300);
-                }
             });
-
-            // Add click handler on document to detect clicks outside modal
-            document.addEventListener('click', function(event) {
-                if (event.target.classList.contains('modal')) {
-                    setTimeout(cleanupModalBackdrops, 300);
-                }
-            });
-
-            // Clean up on page load
-            cleanupModalBackdrops();
         });
     </script>
 </body>

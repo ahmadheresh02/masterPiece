@@ -1,14 +1,14 @@
-@extends('layouts.app')
+@extends('layouts.company')
 
 @section('title', 'Company Dashboard')
 
 @section('content')
-    <div class="container">
+    <div class="container py-4">
         <div class="row mb-4">
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h1 class="section-title mb-0">Company Dashboard</h1>
+                        <h1 class="section-title mb-0">Dashboard</h1>
                         <p class="text-muted">Manage your internship postings and applications</p>
                     </div>
                     <div>
@@ -23,7 +23,7 @@
         <!-- Stats Cards -->
         <div class="row mb-5">
             <div class="col-md-3 col-sm-6 mb-4 mb-md-0">
-                <div class="card">
+                <div class="card dashboard-stat-card">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle p-3 me-3" style="background-color: rgba(67, 97, 238, 0.1);">
@@ -31,13 +31,13 @@
                             </div>
                             <h5 class="card-title mb-0">Active Listings</h5>
                         </div>
-                        <h2 class="mb-0">{{ $activeListing }}</h2>
+                        <h2 class="mb-0 fw-bold">{{ $activeListing }}</h2>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-3 col-sm-6 mb-4 mb-md-0">
-                <div class="card">
+                <div class="card dashboard-stat-card">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle p-3 me-3" style="background-color: rgba(33, 208, 124, 0.1);">
@@ -45,13 +45,13 @@
                             </div>
                             <h5 class="card-title mb-0">Total Applications</h5>
                         </div>
-                        <h2 class="mb-0">{{ $totalApplications }}</h2>
+                        <h2 class="mb-0 fw-bold">{{ $totalApplications }}</h2>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-3 col-sm-6 mb-4 mb-md-0">
-                <div class="card">
+                <div class="card dashboard-stat-card">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle p-3 me-3" style="background-color: rgba(255, 183, 3, 0.1);">
@@ -59,13 +59,13 @@
                             </div>
                             <h5 class="card-title mb-0">Under Review</h5>
                         </div>
-                        <h2 class="mb-0">{{ $underReview }}</h2>
+                        <h2 class="mb-0 fw-bold">{{ $underReview }}</h2>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-3 col-sm-6 mb-4 mb-md-0">
-                <div class="card">
+                <div class="card dashboard-stat-card">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle p-3 me-3" style="background-color: rgba(56, 176, 0, 0.1);">
@@ -73,7 +73,7 @@
                             </div>
                             <h5 class="card-title mb-0">Shortlisted</h5>
                         </div>
-                        <h2 class="mb-0">{{ $shortlisted }}</h2>
+                        <h2 class="mb-0 fw-bold">{{ $shortlisted }}</h2>
                     </div>
                 </div>
             </div>
@@ -85,11 +85,11 @@
                 <h2 class="section-title">Your Internship Listings</h2>
 
                 @forelse($internships as $internship)
-                    <div class="card mb-4">
+                    <div class="card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between flex-wrap">
                                 <div>
-                                    <h3 class="mb-1">{{ $internship->title }}</h3>
+                                    <h3 class="mb-1 fw-bold">{{ $internship->title }}</h3>
                                     <p class="text-muted mb-3">Posted on {{ $internship->created_at->format('M d, Y') }}</p>
 
                                     <div class="d-flex flex-wrap gap-3 mb-3">
@@ -148,7 +148,7 @@
                             <div class="mb-4">
                                 <i class="fas fa-clipboard-list fa-4x text-muted"></i>
                             </div>
-                            <h3>No internship listings</h3>
+                            <h3 class="fw-bold">No internship listings</h3>
                             <p class="text-muted mb-4">Post a new internship to start receiving applications</p>
                             <a href="{{ route('internships.create') }}" class="btn btn-primary">
                                 <i class="fas fa-plus me-2"></i> Post New Internship

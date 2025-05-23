@@ -14,17 +14,31 @@ class CompanyController extends Controller
     {
         $query = Company::query()->withCount('listings');
 
-        // Search functionality
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhere('industry', 'like', "%{$search}%");
+        // Search by keyword (company name, description, or industry)
+        if ($request->filled('keyword')) {
+            $keyword = $request->input('keyword');
+            $query->where(function ($q) use ($keyword) {
+                $q->where('name', 'like', "%{$keyword}%")
+                    ->orWhere('description', 'like', "%{$keyword}%")
+                    ->orWhere('industry', 'like', "%{$keyword}%");
+            });
         }
+
+        // Filter by industry
+        if ($request->filled('industry')) {
+            $industry = $request->input('industry');
+            $query->where('industry', 'like', "%{$industry}%");
+        }
+
+        // Pass search params back to view
+        $searchParams = $request->only(['keyword', 'industry']);
 
         $companies = $query->latest()->paginate(12);
 
-        return view('CompaniesPage', compact('companies'));
+        // Append query parameters to pagination links
+        $companies->appends($searchParams);
+
+        return view('CompaniesPage', compact('companies', 'searchParams'));
     }
 
     /**

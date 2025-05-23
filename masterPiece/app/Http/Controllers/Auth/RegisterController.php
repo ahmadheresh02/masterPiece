@@ -12,6 +12,16 @@ use Illuminate\Support\Facades\Validator;
 class RegisterController extends Controller
 {
     /**
+     * Show the registration form - redirects to step 1 of the multi-step registration.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showRegistrationForm()
+    {
+        return redirect()->route('register.step1');
+    }
+
+    /**
      * Show the step 1 form for registration.
      *
      * @return \Illuminate\View\View

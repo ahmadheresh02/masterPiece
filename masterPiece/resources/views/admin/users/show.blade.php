@@ -122,7 +122,7 @@
                                 <th>Company</th>
                                 <th>Status</th>
                                 <th>Date Applied</th>
-                                <th>Action</th>
+                                {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -136,12 +136,12 @@
                                         </span>
                                     </td>
                                     <td>{{ $application->created_at->format('M d, Y') }}</td>
-                                    <td>
+                                    {{-- <td>
                                         <a href="{{ route('admin.applications.show', ['application' => $application->id]) }}"
                                             class="btn btn-sm btn-primary">
                                             <i class="bi bi-eye"></i> View
                                         </a>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @empty
                                 <tr>

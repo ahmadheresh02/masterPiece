@@ -1,183 +1,283 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto px-4 py-8">
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="p-6 border-b">
-                <div class="flex justify-between items-center">
+    <div class="container py-5">
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-header bg-white p-4">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h1 class="text-2xl font-bold">Application Details</h1>
-                        <p class="text-gray-600">{{ $application->internshipListing->title }}</p>
+                        <h1 class="h3 fw-bold mb-1">Application Details</h1>
+                        <p class="text-muted mb-0">{{ $application->internshipListing->title }}</p>
                     </div>
                     <div>
                         <a href="{{ route('internships.applications.index', $application->listing_id) }}"
-                            class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-md">
-                            <i class="fas fa-arrow-left mr-2"></i> Back to Applications
+                            class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Back to Applications
                         </a>
                     </div>
                 </div>
             </div>
 
             @if (session('success'))
-                <div class="bg-green-100 border border-green-200 text-green-700 px-4 py-3 mb-4 mx-6 mt-6 rounded">
+                <div class="alert alert-success alert-dismissible fade show mx-4 mt-4" role="alert">
                     {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
 
-            <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Left Column - Applicant Info -->
-                <div class="md:col-span-1">
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <h2 class="text-xl font-semibold mb-4">Applicant Information</h2>
+            <div class="card-body p-4">
+                <div class="row">
+                    <!-- Left Column - Applicant Info -->
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <div class="card bg-light border-0 mb-4">
+                            <div class="card-body p-4">
+                                <h2 class="h5 fw-bold mb-4">Applicant Information</h2>
 
-                        <div class="flex flex-col items-center mb-4">
-                            <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-200 mb-3">
-                                <div
-                                    class="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-800 text-3xl font-semibold">
-                                    {{ substr($application->user->name ?? 'U', 0, 1) }}
+                                <div class="text-center mb-4">
+                                    <div class="mb-3 mx-auto" style="width: 100px; height: 100px;">
+                                        @if ($application->user->avatar_url)
+                                            <img src="{{ $application->user->avatar_url }}"
+                                                alt="{{ $application->user->first_name }}" class="rounded-circle img-fluid"
+                                                style="width: 100px; height: 100px; object-fit: cover;">
+                                        @else
+                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white"
+                                                style="width: 100px; height: 100px; font-size: 2.5rem;">
+                                                {{ substr($application->user->first_name ?? 'U', 0, 1) }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <h3 class="h5 fw-bold">{{ $application->user->first_name }}
+                                        {{ $application->user->last_name }}</h3>
+                                    <p class="text-muted">{{ $application->user->email }}</p>
+
+                                    {{-- <div class="mt-3">
+                                        @if ($application->user)
+                                            <a href="{{ route('applicant.profile', ['user' => $application->user->id]) }}"
+                                                class="btn btn-primary w-100">
+                                                <i class="fas fa-user me-1"></i> View Full Profile
+                                            </a>
+                                        @else
+                                            <button class="btn btn-secondary w-100" disabled>
+                                                <i class="fas fa-user me-1"></i> Profile Not Available
+                                            </button>
+                                        @endif
+                                    </div> --}}
                                 </div>
-                            </div>
-                            <h3 class="text-lg font-semibold">{{ $application->user->name }}</h3>
-                            <p class="text-gray-600">{{ $application->user->email }}</p>
-                        </div>
 
-                        <div class="border-t border-gray-200 pt-4">
-                            <div class="mb-3">
-                                <p class="text-gray-500 text-sm">Applied on:</p>
-                                <p>{{ $application->created_at->format('F j, Y') }}</p>
-                            </div>
+                                <div class="border-top pt-4">
+                                    <div class="mb-3">
+                                        <p class="text-muted small mb-1">Applied on:</p>
+                                        <p>{{ $application->created_at->format('F j, Y') }}</p>
+                                    </div>
 
-                            <div class="mb-3">
-                                <p class="text-gray-500 text-sm">Status:</p>
-                                <div class="mt-1">
-                                    @if ($application->status == 'under_review')
-                                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Under
-                                            Review</span>
-                                    @elseif($application->status == 'shortlisted')
-                                        <span
-                                            class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Shortlisted</span>
-                                    @elseif($application->status == 'rejected')
-                                        <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Rejected</span>
-                                    @elseif($application->status == 'pending')
-                                        <span
-                                            class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                                    @else
-                                        <span
-                                            class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">{{ ucfirst($application->status) }}</span>
+                                    <div class="mb-3">
+                                        <p class="text-muted small mb-1">Status:</p>
+                                        <div class="mt-1">
+                                            @if ($application->status == 'under_review')
+                                                <span class="badge bg-info">Under Review</span>
+                                            @elseif($application->status == 'shortlisted')
+                                                <span class="badge bg-success">Shortlisted</span>
+                                            @elseif($application->status == 'rejected')
+                                                <span class="badge bg-danger">Rejected</span>
+                                            @elseif($application->status == 'pending')
+                                                <span class="badge bg-warning">Pending</span>
+                                            @else
+                                                <span class="badge bg-secondary">{{ ucfirst($application->status) }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- Additional Applicant Info -->
+                                    @if ($application->user->phone)
+                                        <div class="mb-3">
+                                            <p class="text-muted small mb-1">Phone:</p>
+                                            <p>{{ $application->user->phone }}</p>
+                                        </div>
+                                    @endif
+
+                                    @if ($application->user->education_level)
+                                        <div class="mb-3">
+                                            <p class="text-muted small mb-1">Education:</p>
+                                            <p>{{ $application->user->education_level }}</p>
+                                        </div>
+                                    @endif
+
+                                    @if ($application->user->university_name)
+                                        <div class="mb-3">
+                                            <p class="text-muted small mb-1">University:</p>
+                                            <p>{{ $application->user->university_name }}</p>
+                                        </div>
+                                    @endif
+
+                                    @if ($application->user->major_field)
+                                        <div class="mb-3">
+                                            <p class="text-muted small mb-1">Major:</p>
+                                            <p>{{ $application->user->major_field }}</p>
+                                        </div>
+                                    @endif
+
+                                    @if ($application->user->graduation_year)
+                                        <div class="mb-3">
+                                            <p class="text-muted small mb-1">Graduation Year:</p>
+                                            <p>{{ $application->user->graduation_year }}</p>
+                                        </div>
                                     @endif
                                 </div>
                             </div>
-
-                            <div>
-                                <p class="text-gray-500 text-sm">Contact:</p>
-                                <p>{{ $application->user->phone ?? 'No phone number' }}</p>
-                            </div>
                         </div>
-                    </div>
 
-                    <!-- Status Update Form -->
-                    <div class="bg-gray-50 p-4 rounded-lg mt-4">
-                        <h3 class="font-semibold mb-3">Update Application Status</h3>
-                        <form action="{{ route('applications.updateStatus', $application->id) }}" method="POST">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="status" class="block text-gray-700 text-sm font-medium mb-1">Status</label>
-                                <select name="status" id="status"
-                                    class="w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="pending" {{ $application->status == 'pending' ? 'selected' : '' }}>
-                                        Pending</option>
-                                    <option value="under_review"
-                                        {{ $application->status == 'under_review' ? 'selected' : '' }}>Under Review
-                                    </option>
-                                    <option value="shortlisted"
-                                        {{ $application->status == 'shortlisted' ? 'selected' : '' }}>Shortlisted</option>
-                                    <option value="rejected" {{ $application->status == 'rejected' ? 'selected' : '' }}>
-                                        Rejected</option>
-                                    <option value="accepted" {{ $application->status == 'accepted' ? 'selected' : '' }}>
-                                        Accepted</option>
-                                </select>
+                        <!-- Status Update Form - Only visible to company users -->
+                        @php
+                            $isCompany = false;
+                            // Check if logged in through the company guard
+                            if (Auth::guard('company')->check()) {
+                                $isCompany = true;
+                            }
+                            // Check if logged in through web guard with company relation
+                            elseif (Auth::guard('web')->check()) {
+                                $user = Auth::guard('web')->user();
+                                $isCompany =
+                                    $user instanceof \App\Models\Company ||
+                                    (method_exists($user, 'company') && $user->company);
+                            }
+
+                            // Check if the company owns this listing
+                            $isOwner = false;
+                            if ($isCompany) {
+                                $company = Auth::guard('company')->check()
+                                    ? Auth::guard('company')->user()
+                                    : Auth::user()->company;
+                                $isOwner = $company && $company->id === $application->internshipListing->company_id;
+                            }
+                        @endphp
+
+                        @if ($isCompany && $isOwner)
+                            <div class="card bg-light border-0">
+                                <div class="card-body p-4">
+                                    <h3 class="h6 fw-bold mb-3">Update Application Status</h3>
+                                    <form action="{{ route('applications.updateStatus', $application->id) }}"
+                                        method="POST">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="status"
+                                                class="form-label small fw-medium text-muted">Status</label>
+                                            <select name="status" id="status" class="form-select">
+                                                <option value="pending"
+                                                    {{ $application->status == 'pending' ? 'selected' : '' }}>
+                                                    Pending</option>
+                                                <option value="under_review"
+                                                    {{ $application->status == 'under_review' ? 'selected' : '' }}>Under
+                                                    Review
+                                                </option>
+                                                <option value="shortlisted"
+                                                    {{ $application->status == 'shortlisted' ? 'selected' : '' }}>
+                                                    Shortlisted</option>
+                                                <option value="rejected"
+                                                    {{ $application->status == 'rejected' ? 'selected' : '' }}>
+                                                    Rejected</option>
+                                                <option value="accepted"
+                                                    {{ $application->status == 'accepted' ? 'selected' : '' }}>
+                                                    Accepted</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="feedback" class="form-label small fw-medium text-muted">Feedback
+                                                (optional)</label>
+                                            <textarea name="feedback" id="feedback" rows="3" class="form-control">{{ $application->feedback }}</textarea>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            Update Status
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-
-                            <div class="mb-3">
-                                <label for="feedback" class="block text-gray-700 text-sm font-medium mb-1">Feedback
-                                    (optional)</label>
-                                <textarea name="feedback" id="feedback" rows="3"
-                                    class="w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">{{ $application->feedback }}</textarea>
-                            </div>
-
-                            <button type="submit"
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">
-                                Update Status
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Right Column - Application Content -->
-                <div class="md:col-span-2">
-                    <!-- Cover Letter -->
-                    <div class="bg-white border border-gray-200 rounded-lg p-4 mb-4">
-                        <h2 class="text-xl font-semibold mb-3">Cover Letter</h2>
-                        <div class="prose max-w-none">
-                            {!! nl2br(e($application->cover_letter)) !!}
-                        </div>
-                    </div>
-
-                    <!-- Resume -->
-                    @if ($application->resume_path)
-                        <div class="bg-white border border-gray-200 rounded-lg p-4 mb-4">
-                            <h2 class="text-xl font-semibold mb-3">Resume</h2>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <i class="fas fa-file-pdf text-red-500 text-2xl mr-3"></i>
-                                    <div>
-                                        <p class="font-medium">Resume</p>
-                                        <p class="text-gray-500 text-sm">PDF Document</p>
+                        @elseif($application->feedback)
+                            <div class="card bg-light border-0">
+                                <div class="card-body p-4">
+                                    <h3 class="h6 fw-bold mb-3">Company Feedback</h3>
+                                    <div class="p-3 bg-white rounded">
+                                        {!! nl2br(e($application->feedback)) !!}
                                     </div>
                                 </div>
-                                <a href="{{ Storage::url($application->resume_path) }}"
-                                    class="bg-gray-100 hover:bg-gray-200 text-gray-800 py-1 px-3 rounded" target="_blank">
-                                    <i class="fas fa-download mr-1"></i> Download
-                                </a>
                             </div>
-                        </div>
-                    @endif
+                        @endif
+                    </div>
 
-                    <!-- Internship Information -->
-                    <div class="bg-white border border-gray-200 rounded-lg p-4">
-                        <h2 class="text-xl font-semibold mb-3">Internship Information</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-gray-500 text-sm">Position:</p>
-                                <p class="font-medium">{{ $application->internshipListing->title }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-500 text-sm">Company:</p>
-                                <p class="font-medium">{{ $application->internshipListing->company->name }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-500 text-sm">Location:</p>
-                                <p>{{ $application->internshipListing->location }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-500 text-sm">Type:</p>
-                                <p>{{ $application->internshipListing->is_remote ? 'Remote' : 'On-site' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-500 text-sm">Duration:</p>
-                                <p>{{ $application->internshipListing->duration ?? 'Not specified' }} months</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-500 text-sm">Deadline:</p>
-                                <p>{{ $application->internshipListing->application_deadline->format('M d, Y') }}</p>
+                    <!-- Right Column - Application Content -->
+                    <div class="col-md-8">
+                        <!-- Cover Letter -->
+                        <div class="card mb-4">
+                            <div class="card-body p-4">
+                                <h2 class="h5 fw-bold mb-3">Cover Letter</h2>
+                                <div>
+                                    {!! nl2br(e($application->cover_letter)) !!}
+                                </div>
                             </div>
                         </div>
 
-                        <div class="mt-3">
-                            <a href="{{ route('internships.show', $application->listing_id) }}"
-                                class="text-blue-600 hover:text-blue-800 text-sm">
-                                <i class="fas fa-external-link-alt mr-1"></i> View full internship details
-                            </a>
+                        <!-- Resume -->
+                        @if ($application->resume_path)
+                            <div class="card mb-4">
+                                <div class="card-body p-4">
+                                    <h2 class="h5 fw-bold mb-3">Resume</h2>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-file-pdf text-danger fs-3 me-3"></i>
+                                            <div>
+                                                <p class="fw-medium mb-0">Resume</p>
+                                                <p class="text-muted small mb-0">PDF Document</p>
+                                            </div>
+                                        </div>
+                                        <a href="{{ Storage::url($application->resume_path) }}"
+                                            class="btn btn-light btn-sm" target="_blank">
+                                            <i class="fas fa-download me-1"></i> Download
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        <!-- Internship Information -->
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <h2 class="h5 fw-bold mb-3">Internship Information</h2>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <p class="text-muted small mb-1">Position:</p>
+                                        <p class="fw-medium">{{ $application->internshipListing->title }}</p>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <p class="text-muted small mb-1">Company:</p>
+                                        <p class="fw-medium">{{ $application->internshipListing->company->name }}</p>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <p class="text-muted small mb-1">Location:</p>
+                                        <p>{{ $application->internshipListing->location }}</p>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <p class="text-muted small mb-1">Type:</p>
+                                        <p>{{ $application->internshipListing->is_remote ? 'Remote' : 'On-site' }}</p>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <p class="text-muted small mb-1">Duration:</p>
+                                        <p>{{ $application->internshipListing->duration ?? 'Not specified' }} months</p>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <p class="text-muted small mb-1">Deadline:</p>
+                                        <p>{{ $application->internshipListing->application_deadline->format('M d, Y') }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-2">
+                                    <a href="{{ route('internships.show', $application->listing_id) }}"
+                                        class="text-primary">
+                                        <i class="fas fa-external-link-alt me-1"></i> View full internship details
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

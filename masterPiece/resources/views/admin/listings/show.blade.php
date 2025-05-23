@@ -129,7 +129,7 @@
                                 <th>Email</th>
                                 <th>Status</th>
                                 <th>Applied On</th>
-                                <th>Action</th>
+                                {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -151,12 +151,12 @@
                                         </span>
                                     </td>
                                     <td>{{ $application->created_at->format('M d, Y') }}</td>
-                                    <td>
+                                    {{-- <td>
                                         <a href="{{ route('admin.applications.show', $application) }}"
                                             class="btn btn-sm btn-primary">
                                             <i class="bi bi-eye"></i> View
                                         </a>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @empty
                                 <tr>

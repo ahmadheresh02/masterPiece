@@ -3,6 +3,20 @@
 @section('content')
     <h1 class="admin-title">Companies Management</h1>
 
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <div class="admin-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="mb-0">All Companies</h5>
@@ -51,18 +65,39 @@
                             </td>
                             <td>{{ $company->created_at->format('M d, Y') }}</td>
                             <td class="action-buttons">
-                                <a href="{{ route('admin.companies.show', $company) }}" class="btn btn-sm btn-primary">
-                                    <i class="bi bi-eye"></i> View
-                                </a>
-                                <form action="{{ route('admin.companies.destroy', $company) }}" method="POST"
-                                    class="d-inline"
-                                    onsubmit="return confirm('Are you sure you want to delete this company?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </button>
-                                </form>
+                                <div class="d-flex gap-1">
+                                    <a href="{{ route('admin.companies.show', $company) }}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+
+                                    @if (!$company->is_verified)
+                                        <form action="{{ route('admin.companies.verify', $company) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="bi bi-check-circle"></i> Verify
+                                            </button>
+                                        </form>
+                                    @else
+                                        <form action="{{ route('admin.companies.unverify', $company) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-warning">
+                                                <i class="bi bi-x-circle"></i> Unverify
+                                            </button>
+                                        </form>
+                                    @endif
+
+                                    <form action="{{ route('admin.companies.destroy', $company) }}" method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Are you sure you want to delete this company?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @empty

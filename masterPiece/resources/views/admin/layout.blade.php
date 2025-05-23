@@ -110,29 +110,62 @@
         /* Cards */
         .admin-card {
             background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            border: none;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
             margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
         }
 
         /* Stat Cards */
         .stat-card {
             display: flex;
             align-items: center;
-            padding: 20px;
+            padding: 24px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
         }
 
         .stat-icon {
-            width: 60px;
-            height: 60px;
+            width: 64px;
+            height: 64px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
-            margin-right: 15px;
+            border-radius: 12px;
+            margin-right: 20px;
             font-size: 1.8rem;
             color: white;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .stat-users {
@@ -204,6 +237,33 @@
         /* Action Buttons */
         .action-buttons .btn {
             margin-right: 5px;
+        }
+        
+        /* Button Styling */
+        .btn-primary {
+            background: linear-gradient(135deg, #0A66C2 0%, #0854A0 100%);
+            border: none;
+            box-shadow: 0 2px 8px rgba(10, 102, 194, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(10, 102, 194, 0.4);
+            background: linear-gradient(135deg, #0854A0 0%, #064484 100%);
+        }
+        
+        .btn-outline-primary {
+            border-color: #0A66C2;
+            color: #0A66C2;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #0A66C2;
+            border-color: #0A66C2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(10, 102, 194, 0.15);
         }
 
         /* Status Badges */
@@ -319,12 +379,6 @@
                 </a>
             </li>
             <li class="mt-5">
-                <a href="/">
-                    <i class="bi bi-arrow-left-circle"></i>
-                    <span>Back to Website</span>
-                </a>
-            </li>
-            <li>
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="bi bi-box-arrow-right"></i>
                     <span>Logout</span>
@@ -353,10 +407,6 @@
                         <span class="d-none d-md-inline ms-1">Admin</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="/">Back to Website</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
                         <li>
                             <a class="dropdown-item" href="#"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

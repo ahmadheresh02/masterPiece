@@ -1,4 +1,6 @@
-<x-Layout>
+@extends('layouts.app')
+
+@section('content')
     <style>
         .card {
             min-width: 100%;
@@ -95,8 +97,8 @@
                                                 class="btn btn-sm btn-outline-primary">
                                                 <i class="bi bi-eye me-1"></i> View
                                             </a>
-                                            <form action="{{ route('applications.destroy', $application) }}"
-                                                method="POST" class="d-inline">
+                                            <form action="{{ route('applications.destroy', $application) }}" method="POST"
+                                                class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger"
@@ -128,4 +130,4 @@
             </div>
         </div>
     </div>
-</x-Layout>
+@endsection

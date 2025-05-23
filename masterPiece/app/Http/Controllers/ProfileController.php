@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Application;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
@@ -24,6 +25,40 @@ class ProfileController extends Controller
     }
 
     /**
+     * Display a user profile for a company
+     */
+    public function showForCompany(User $user)
+    {
+        // Get the authenticated company
+        $company = null;
+
+        // Check if logged in through the company guard
+        if (Auth::guard('company')->check()) {
+            $company = Auth::guard('company')->user();
+        }
+        // Check if logged in through web guard
+        else if (Auth::guard('web')->check() && Auth::user()->company) {
+            $company = Auth::user()->company;
+        }
+
+        // Ensure the company can only view applicants who applied to their listings
+        $applications = Application::whereHas('internshipListing', function ($query) use ($company) {
+            $query->where('company_id', $company->id);
+        })
+            ->where('user_id', $user->id)
+            ->with('internshipListing')
+            ->get();
+
+        // If the user hasn't applied to any of the company's listings, deny access
+        if ($applications->isEmpty()) {
+            return redirect()->route('company.dashboard')
+                ->with('error', 'You do not have permission to view this applicant profile.');
+        }
+
+        return view('applicants.profile', compact('user', 'applications'));
+    }
+
+    /**
      * Show the form for editing the user's profile
      */
     public function edit()
@@ -38,7 +73,7 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-        
+
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -60,7 +95,7 @@ class ProfileController extends Controller
         if (isset($validated['skills']) && $validated['skills']) {
             $validated['skills'] = array_map('trim', explode(',', $validated['skills']));
         }
-        
+
         if (isset($validated['languages']) && $validated['languages']) {
             $validated['languages'] = array_map('trim', explode(',', $validated['languages']));
         }
@@ -76,7 +111,7 @@ class ProfileController extends Controller
             $path = $request->file('profile_picture')->store('profile-pictures', 'public');
             $validated['profile_picture_url'] = $path;
         }
-        
+
         // Handle resume upload if provided
         if ($request->hasFile('resume')) {
             // Delete old resume if exists

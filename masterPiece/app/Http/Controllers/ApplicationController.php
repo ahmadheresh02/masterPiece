@@ -162,16 +162,34 @@ class ApplicationController extends Controller
         $user = Auth::user();
 
         // Check if user is authorized to view this application
-        $isCompanyOwner = $user->company && $user->company->id === $application->internshipListing->company_id;
-        $isApplicant = $user->id === $application->user_id;
+        $isCompanyOwner = false;
 
-        if (!$isCompanyOwner && !$isApplicant) {
-            return redirect()->route('home')->with('error', 'You are not authorized to view this application');
+        try {
+            // Add null checks to prevent 'Attempt to read property id on null'
+            if (
+                $user->company &&
+                $application->internshipListing &&
+                $application->internshipListing->company_id
+            ) {
+                $isCompanyOwner = $user->company->id === $application->internshipListing->company_id;
+            }
+
+            $isApplicant = $user->id === $application->user_id;
+
+            if (!$isCompanyOwner && !$isApplicant) {
+                return redirect()->route('profile.show')->with('error', 'You are not authorized to view this application');
+            }
+
+            $application->load(['user', 'internshipListing.company']);
+
+            return view('applications.show', compact('application'));
+
+        } catch (\Exception $e) {
+            // Log the error
+            \Log::error('Application view error: ' . $e->getMessage());
+            // Redirect to profile page with error message
+            return redirect()->route('profile.show')->with('error', 'Unable to view this application');
         }
-
-        $application->load(['user', 'internshipListing.company']);
-
-        return view('applications.show', compact('application'));
     }
 
     /**
@@ -181,25 +199,37 @@ class ApplicationController extends Controller
     {
         $user = Auth::user();
 
-        // Check if user is the owner of the company that posted the internship
-        if (!$user->company || $user->company->id !== $application->internshipListing->company_id) {
-            return redirect()->route('home')->with('error', 'You are not authorized to update this application');
+        try {
+            // Check if user is the owner of the company that posted the internship
+            // Add null checks to prevent 'Attempt to read property id on null'
+            if (
+                !$user->company ||
+                !$application->internshipListing ||
+                !$application->internshipListing->company_id ||
+                $user->company->id !== $application->internshipListing->company_id
+            ) {
+                return redirect()->route('home')->with('error', 'You are not authorized to update this application');
+            }
+
+            $validated = $request->validate([
+                'status' => 'required|in:pending,under_review,shortlisted,rejected,accepted',
+                'feedback' => 'nullable|string',
+            ]);
+
+            $application->status = $validated['status'];
+
+            if (isset($validated['feedback'])) {
+                $application->feedback = $validated['feedback'];
+            }
+
+            $application->save();
+
+            return redirect()->back()->with('success', 'Application status updated successfully');
+        } catch (\Exception $e) {
+            // Log the error
+            \Log::error('Application status update error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Unable to update application status');
         }
-
-        $validated = $request->validate([
-            'status' => 'required|in:pending,under_review,shortlisted,rejected,accepted',
-            'feedback' => 'nullable|string',
-        ]);
-
-        $application->status = $validated['status'];
-
-        if (isset($validated['feedback'])) {
-            $application->feedback = $validated['feedback'];
-        }
-
-        $application->save();
-
-        return redirect()->back()->with('success', 'Application status updated successfully');
     }
 
     /**
@@ -209,17 +239,33 @@ class ApplicationController extends Controller
     {
         $user = Auth::user();
 
-        // Check if user is authorized to delete this application
-        $isCompanyOwner = $user->company && $user->company->id === $application->internshipListing->company_id;
-        $isApplicant = $user->id === $application->user_id;
+        try {
+            // Check if user is authorized to delete this application
+            $isCompanyOwner = false;
 
-        if (!$isCompanyOwner && !$isApplicant) {
-            return redirect()->route('home')->with('error', 'You are not authorized to delete this application');
+            // Add null checks to prevent 'Attempt to read property id on null'
+            if (
+                $user->company &&
+                $application->internshipListing &&
+                $application->internshipListing->company_id
+            ) {
+                $isCompanyOwner = $user->company->id === $application->internshipListing->company_id;
+            }
+
+            $isApplicant = $user->id === $application->user_id;
+
+            if (!$isCompanyOwner && !$isApplicant) {
+                return redirect()->route('home')->with('error', 'You are not authorized to delete this application');
+            }
+
+            $application->delete();
+
+            return redirect()->back()->with('success', 'Application deleted successfully');
+        } catch (\Exception $e) {
+            // Log the error
+            \Log::error('Application deletion error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Unable to delete application');
         }
-
-        $application->delete();
-
-        return redirect()->back()->with('success', 'Application deleted successfully');
     }
 
     /**

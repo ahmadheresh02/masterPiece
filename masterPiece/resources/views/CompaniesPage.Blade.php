@@ -418,19 +418,26 @@
                         opportunities to jumpstart your career.</p>
 
                     <div class="hero-search-container">
-                        <form action="#" method="get" class="mb-0">
+                        <form action="{{ route('companies.index') }}" method="get" class="mb-0">
                             <div class="input-group">
-                                <input type="text" class="form-control form-control-lg"
-                                    placeholder="Search companies or industries..." aria-label="Search companies">
+                                <input type="text" class="form-control form-control-lg" name="keyword"
+                                    placeholder="Search companies or industries..." aria-label="Search companies"
+                                    value="{{ request('keyword') }}">
                                 <button class="btn btn-primary btn-lg px-4" type="submit">
                                     <i class="bi bi-search"></i> Search
                                 </button>
                             </div>
                             <div class="mt-3 d-flex flex-wrap gap-3">
-                                <span class="badge bg-light text-dark px-3 py-2">Tech</span>
-                                <span class="badge bg-light text-dark px-3 py-2">Finance</span>
-                                <span class="badge bg-light text-dark px-3 py-2">Healthcare</span>
-                                <span class="badge bg-light text-dark px-3 py-2">Marketing</span>
+                                <a href="{{ route('companies.index', ['industry' => 'technology']) }}"
+                                    class="badge bg-light text-dark px-3 py-2 text-decoration-none">Tech</a>
+                                <a href="{{ route('companies.index', ['industry' => 'finance']) }}"
+                                    class="badge bg-light text-dark px-3 py-2 text-decoration-none">Finance</a>
+                                <a href="{{ route('companies.index', ['industry' => 'healthcare']) }}"
+                                    class="badge bg-light text-dark px-3 py-2 text-decoration-none">Healthcare</a>
+                                <a href="{{ route('companies.index', ['industry' => 'marketing']) }}"
+                                    class="badge bg-light text-dark px-3 py-2 text-decoration-none">Marketing</a>
+                                <input type="hidden" name="industry" id="hidden-industry"
+                                    value="{{ request('industry') }}">
                             </div>
                         </form>
                     </div>

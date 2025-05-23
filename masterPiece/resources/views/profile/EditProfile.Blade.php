@@ -224,12 +224,16 @@
                             <div class="mb-4" id="resume">
                                 <h4 class="mb-3">Resume</h4>
                                 <div class="mb-3">
-                                    @if($user->default_resume_path)
+                                    @if ($user->default_resume_path)
                                         <div class="mb-3 d-flex align-items-center">
-                                            <i class="bi bi-file-earmark-pdf text-danger me-3" style="font-size: 1.5rem;"></i>
+                                            <i class="bi bi-file-earmark-pdf text-danger me-3"
+                                                style="font-size: 1.5rem;"></i>
                                             <div>
-                                                <p class="mb-1">Current resume: <a href="{{ asset($user->default_resume_path) }}" target="_blank">View Resume</a></p>
-                                                <p class="small text-muted">Updated: {{ $user->updated_at->format('M d, Y') }}</p>
+                                                <p class="mb-1">Current resume: <a
+                                                        href="{{ asset($user->default_resume_path) }}"
+                                                        target="_blank">View Resume</a></p>
+                                                <p class="small text-muted">Updated:
+                                                    {{ $user->updated_at->format('M d, Y') }}</p>
                                             </div>
                                         </div>
                                     @endif

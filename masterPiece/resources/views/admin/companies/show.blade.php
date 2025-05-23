@@ -8,6 +8,20 @@
         </a>
     </div>
 
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <div class="row">
         <div class="col-md-4">
             <div class="admin-card">
@@ -65,9 +79,19 @@
 
                 <div class="d-grid gap-2">
                     @if (!$company->is_verified)
-                        <button class="btn btn-success mb-2">
-                            <i class="bi bi-check-circle"></i> Verify Company
-                        </button>
+                        <form action="{{ route('admin.companies.verify', $company) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-success mb-2">
+                                <i class="bi bi-check-circle"></i> Verify Company
+                            </button>
+                        </form>
+                    @else
+                        <form action="{{ route('admin.companies.unverify', $company) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-warning mb-2">
+                                <i class="bi bi-x-circle"></i> Revoke Verification
+                            </button>
+                        </form>
                     @endif
 
                     <form action="{{ route('admin.companies.destroy', $company) }}" method="POST"

@@ -119,16 +119,18 @@
                                     <label class="form-label small fw-bold">Internship Type</label>
                                     <div class="d-flex flex-wrap gap-3">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="paid" id="paidCheck">
+                                            <input class="form-check-input" type="checkbox" name="paid" id="paidCheck"
+                                                value="1">
                                             <label class="form-check-label" for="paidCheck">Paid</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="unpaid" id="unpaidCheck">
+                                            <input class="form-check-input" type="checkbox" name="unpaid" id="unpaidCheck"
+                                                value="1">
                                             <label class="form-check-label" for="unpaidCheck">Unpaid</label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="credit"
-                                                id="creditCheck">
+                                                id="creditCheck" value="1">
                                             <label class="form-check-label" for="creditCheck">For Academic Credit</label>
                                         </div>
                                     </div>
