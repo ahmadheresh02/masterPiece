@@ -155,12 +155,16 @@ class InternshipListingController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'location' => 'required|string|max:255',
-            'duration' => 'nullable|integer|min:1|max:24',
-            'requirements' => 'nullable|string',
+            'duration' => 'required|integer|min:1|max:24',
+            'requirements' => 'required|string',
+            'responsibilities' => 'nullable|string',
             'application_deadline' => 'required|date|after:today',
             'skills_required' => 'nullable|string',
+            'salary_range' => 'nullable|string|max:255',
+            'internship_type' => 'required|in:full-time,part-time,contract',
             'is_remote' => 'boolean',
             'is_active' => 'boolean',
+            'is_paid' => 'boolean',
         ]);
 
         // Convert comma-separated skills to array
@@ -170,12 +174,16 @@ class InternshipListingController extends Controller
             $validated['skills_required'] = [];
         }
 
+        // Set boolean fields that might not be present in the request
+        $validated['is_remote'] = $request->has('is_remote');
+        $validated['is_active'] = $request->has('is_active');
+
         $internship = new InternshipListing($validated);
         $internship->company_id = $company->id;
         $internship->save();
 
         return redirect()->route('company.dashboard')
-            ->with('success', 'Internship listing created successfully');
+            ->with('success', 'Internship listing created successfully. It is now available for students to apply.');
     }
 
     /**
@@ -237,12 +245,16 @@ class InternshipListingController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'location' => 'required|string|max:255',
-            'duration' => 'nullable|integer|min:1|max:24',
-            'requirements' => 'nullable|string',
+            'duration' => 'required|integer|min:1|max:24',
+            'requirements' => 'required|string',
+            'responsibilities' => 'nullable|string',
             'application_deadline' => 'required|date',
             'skills_required' => 'nullable|string',
+            'salary_range' => 'nullable|string|max:255',
+            'internship_type' => 'required|in:full-time,part-time,contract',
             'is_remote' => 'boolean',
             'is_active' => 'boolean',
+            'is_paid' => 'boolean',
         ]);
 
         // Convert comma-separated skills to array
@@ -251,6 +263,10 @@ class InternshipListingController extends Controller
         } else {
             $validated['skills_required'] = [];
         }
+
+        // Set boolean fields that might not be present in the request
+        $validated['is_remote'] = $request->has('is_remote');
+        $validated['is_active'] = $request->has('is_active');
 
         $internship->update($validated);
 
@@ -283,5 +299,58 @@ class InternshipListingController extends Controller
 
         return redirect()->route('company.dashboard')
             ->with('success', 'Internship listing deleted successfully');
+    }
+
+    /**
+     * Apply directly to an internship without redirects.
+     */
+    public function applyDirect(InternshipListing $internship)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please login to apply for internships');
+        }
+
+        // Check if user is a company (companies can't apply)
+        if ($user->company) {
+            return back()->with('error', 'Companies cannot apply for internships');
+        }
+
+        // Check if the listing is active
+        if (!$internship->is_active) {
+            return back()->with('error', 'This internship listing is no longer active');
+        }
+
+        // Check if the user already applied - show clear error message
+        $existingApplication = \App\Models\Application::where([
+            'user_id' => $user->id,
+            'listing_id' => (int) $internship->id
+        ])->first();
+
+        if ($existingApplication) {
+            return back()->with('error', 'You have already applied for this internship. You can track your application status in your applications dashboard.');
+        }
+
+        try {
+            // Create a basic application without requiring a resume or cover letter
+            $application = new \App\Models\Application();
+            $application->user_id = $user->id;
+            $application->listing_id = (int) $internship->id;
+            $application->status = 'pending';
+            $application->cover_letter = 'Applied directly from internship listing page.';
+
+            // Use a default resume path for simplicity
+            $application->resume_path = $user->default_resume_path ?? 'resumes/default-resume.pdf';
+
+            $application->save();
+
+            return redirect()->route('applications.index')
+                ->with('success', 'Your application has been submitted successfully! You can see it in your applications list.');
+
+        } catch (\Exception $e) {
+            \Log::error('Direct application error: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred. Please try again later.');
+        }
     }
 }

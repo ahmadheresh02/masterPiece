@@ -15,8 +15,8 @@ class CompanyDashboardController extends Controller
      */
     public function __construct()
     {
-        // Use the company guard for authentication
-        $this->middleware(['auth:web,company'])->except(['redirectToDashboard']);
+        // Use the company guard for authentication on all methods
+        $this->middleware(['auth:web,company']);
     }
 
     /**
@@ -24,11 +24,6 @@ class CompanyDashboardController extends Controller
      */
     public function redirectToDashboard()
     {
-        // Check both the web and company guards
-        if (!Auth::guard('web')->check() && !Auth::guard('company')->check()) {
-            return redirect()->route('login')->with('intended', route('company.dashboard'));
-        }
-
         return $this->index();
     }
 

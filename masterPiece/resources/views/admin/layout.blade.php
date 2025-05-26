@@ -4,15 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Internship Portal</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Admin Dashboard') | InternMatch Admin</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Custom CSS -->
+    <!-- Custom Button Styles -->
+    <link href="{{ asset('css/buttons.css') }}" rel="stylesheet">
+
+    <!-- Styles -->
     <style>
         :root {
             --primary-color: #2563eb;
@@ -238,7 +242,7 @@
         .action-buttons .btn {
             margin-right: 5px;
         }
-        
+
         /* Button Styling */
         .btn-primary {
             background: linear-gradient(135deg, #0A66C2 0%, #0854A0 100%);
@@ -246,19 +250,19 @@
             box-shadow: 0 2px 8px rgba(10, 102, 194, 0.2);
             transition: all 0.3s ease;
         }
-        
+
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(10, 102, 194, 0.4);
             background: linear-gradient(135deg, #0854A0 0%, #064484 100%);
         }
-        
+
         .btn-outline-primary {
             border-color: #0A66C2;
             color: #0A66C2;
             transition: all 0.3s ease;
         }
-        
+
         .btn-outline-primary:hover {
             background-color: #0A66C2;
             border-color: #0A66C2;
@@ -337,6 +341,8 @@
             }
         }
     </style>
+
+    @stack('styles')
 </head>
 
 <body>
@@ -345,7 +351,7 @@
         <div class="admin-logo">
             <a href="{{ route('admin.dashboard') }}" class="d-flex align-items-center">
                 <i class="bi bi-briefcase-fill text-primary me-2" style="font-size: 1.5rem;"></i>
-                <span>Internship Portal</span>
+                <span>InternConnect</span>
             </a>
         </div>
 

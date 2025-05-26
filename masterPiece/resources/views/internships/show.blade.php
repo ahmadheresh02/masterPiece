@@ -4,7 +4,7 @@
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <div class="card shadow border-0 rounded-3">
+                <div class="card shadow border-0 rounded-3" style="width:100%;">
                     <!-- Header -->
                     <div class="card-header bg-white p-4">
                         <div class="d-flex justify-content-between align-items-start flex-wrap">
@@ -152,72 +152,26 @@
                                         </div>
                                     @else
                                         @if ($internship->is_active && $internship->application_deadline->isFuture())
-                                            <div class="alert alert-success mb-4">
-                                                <p class="mb-0"><i class="fas fa-info-circle me-2"></i> This internship is
-                                                    accepting applications
-                                                    until {{ $internship->application_deadline->format('M d, Y') }}.</p>
-                                            </div>
-                                            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
-                                                data-bs-target="#applyModal">
-                                                Apply Now
-                                            </button>
+                                            <div class="alert alert-info mb-4">
+                                                <div class="mb-3">
+                                                    <h4 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Ready to
+                                                        Apply?
+                                                    </h4>
+                                                    <p>This internship is accepting applications until
+                                                        {{ $internship->application_deadline->format('M d, Y') }}.</p>
+                                                    <p>Click the button below to submit your application for
+                                                        <strong>{{ $internship->title }}</strong> at
+                                                        <strong>{{ $internship->company->name }}</strong>.
+                                                    </p>
+                                                </div>
 
-                                            <!-- Apply Modal -->
-                                            <div class="modal fade" id="applyModal" tabindex="-1"
-                                                aria-labelledby="applyModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="applyModalLabel">Confirm Application
-                                                            </h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Are you sure you want to apply for the internship:
-                                                                <strong>{{ $internship->title }}</strong> at
-                                                                <strong>{{ $internship->company->name }}</strong>?
-                                                            </p>
-                                                            <p class="text-muted">You will be able to upload your resume and add
-                                                                a cover letter in the next step.</p>
-                                                        </div>
-                                                        <div class="modal-footer" style="position: relative; z-index: 1100;">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                style="position: relative; z-index: 1100;"
-                                                                onclick="document.querySelector('#applyModal').classList.remove('show'); document.body.classList.remove('modal-open'); document.querySelector('.modal-backdrop').remove();">
-                                                                Cancel
-                                                            </button>
-                                                            <a href="{{ route('applications.create', ['internship' => $internship->id]) }}"
-                                                                class="btn btn-primary"
-                                                                style="position: relative; z-index: 1100;">
-                                                                Confirm Application
-                                                            </a>
-                                                        </div>
-                                                    </div>
+                                                <div class="d-grid gap-2 d-md-flex">
+                                                    <a href="{{ route('internships.applyDirect', ['internship' => $internship->id]) }}"
+                                                        class="btn btn-primary">
+                                                        <i class="fas fa-paper-plane me-2"></i> Apply Now
+                                                    </a>
                                                 </div>
                                             </div>
-
-                                            <style>
-                                                .modal-dialog {
-                                                    position: relative;
-                                                    z-index: 1056 !important;
-                                                }
-
-                                                .modal-content {
-                                                    position: relative;
-                                                    z-index: 1056 !important;
-                                                }
-
-                                                .modal-footer .btn {
-                                                    position: relative;
-                                                    z-index: 1100 !important;
-                                                    pointer-events: auto !important;
-                                                }
-
-                                                .modal-backdrop {
-                                                    z-index: 1055 !important;
-                                                }
-                                            </style>
                                         @else
                                             <div class="alert alert-danger">
                                                 <p class="mb-0"><i class="fas fa-exclamation-circle me-2"></i> This internship

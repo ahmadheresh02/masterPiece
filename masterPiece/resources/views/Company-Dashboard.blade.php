@@ -85,7 +85,7 @@
                 <h2 class="section-title">Your Internship Listings</h2>
 
                 @forelse($internships as $internship)
-                    <div class="card">
+                    <div class="card mb-3">
                         <div class="card-body">
                             <div class="d-flex justify-content-between flex-wrap">
                                 <div>
@@ -119,26 +119,15 @@
                                 </div>
 
                                 <div class="d-flex">
-                                    <a href="{{ route('internships.edit', $internship->id) }}"
-                                        class="btn btn-sm btn-outline-secondary me-2">
+                                    <a href="{{ route('internships.edit', $internship) }}"
+                                        class="btn btn-outline-primary me-2">
                                         <i class="fas fa-edit me-1"></i> Edit
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                        onclick="confirmDelete('{{ route('internships.destroy', $internship->id) }}')">
+                                    <button type="button" class="btn btn-outline-danger"
+                                        onclick="confirmDelete('{{ route('internships.destroy', $internship) }}')">
                                         <i class="fas fa-trash me-1"></i> Delete
                                     </button>
                                 </div>
-                            </div>
-
-                            <div class="d-flex mt-3">
-                                <a href="{{ route('internships.applications.index', $internship->id) }}"
-                                    class="btn btn-sm btn-primary me-2">
-                                    <i class="fas fa-users me-1"></i> View Applications
-                                </a>
-                                <a href="{{ route('internships.show', $internship->id) }}"
-                                    class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye me-1"></i> View Listing
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -205,6 +194,8 @@
                                                     <span class="badge bg-danger">Rejected</span>
                                                 @elseif($application->status == 'pending')
                                                     <span class="badge bg-warning text-dark">Pending</span>
+                                                @elseif($application->status == 'accepted')
+                                                    <span class="badge bg-success">Accepted</span>
                                                 @else
                                                     <span
                                                         class="badge bg-secondary">{{ ucfirst($application->status) }}</span>
@@ -212,11 +203,17 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex">
-                                                    <a href="{{ route('applications.show', $application->id) }}"
-                                                        class="btn btn-sm btn-outline-primary">
+                                                    {{-- <a href="{{ route('applications.show', $application->id) }}"
+                                                        class="btn btn-sm btn-outline-primary me-1">
                                                         <i class="fas fa-eye"></i>
-                                                    </a>
-                                                    <div class="dropdown ms-2">
+                                                    </a> --}}
+                                                    @if ($application->user)
+                                                        <a href="{{ route('applicant.profile', $application->user) }}"
+                                                            class="btn btn-sm btn-outline-info me-1">
+                                                            <i class="fas fa-user"></i>
+                                                        </a>
+                                                    @endif
+                                                    <div class="dropdown ms-1">
                                                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
                                                             type="button" data-bs-toggle="dropdown"
                                                             aria-expanded="false">
@@ -243,6 +240,17 @@
                                                                         value="shortlisted">
                                                                     <button type="submit"
                                                                         class="dropdown-item">Shortlist</button>
+                                                                </form>
+                                                            </li>
+                                                            <li>
+                                                                <form
+                                                                    action="{{ route('applications.updateStatus', $application->id) }}"
+                                                                    method="POST">
+                                                                    @csrf
+                                                                    <input type="hidden" name="status"
+                                                                        value="accepted">
+                                                                    <button type="submit"
+                                                                        class="dropdown-item">Accept</button>
                                                                 </form>
                                                             </li>
                                                             <li>
@@ -280,7 +288,7 @@
 @push('scripts')
     <script>
         function confirmDelete(url) {
-            if (confirm('Are you sure you want to delete this listing?')) {
+            if (confirm('Are you sure you want to delete this internship listing?')) {
                 // Create a form element
                 const form = document.createElement('form');
                 form.method = 'POST';

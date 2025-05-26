@@ -167,7 +167,7 @@
         .featured-companies {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 24px;
             margin-bottom: 40px;
         }
 
@@ -175,31 +175,51 @@
             background-color: white;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid var(--border-color);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
         .company-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .company-card-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
         .company-card-content {
-            padding: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            z-index: 2;
         }
 
-        .company-card-header {
+        .company-actions {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            gap: 10px;
+            position: relative;
+            z-index: 3;
         }
 
         .company-logo {
-            width: 50px;
-            height: 50px;
-            background-color: #f3f3f3;
-            border-radius: 8px;
+            width: 60px;
+            height: 60px;
+            background-color: #f5f8ff;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -207,80 +227,84 @@
             font-weight: bold;
             color: var(--primary-color);
             margin-right: 15px;
+            border: 1px solid rgba(10, 102, 194, 0.1);
+            overflow: hidden;
         }
 
         .company-info h3 {
-            margin: 0 0 4px 0;
-            font-size: 1.2rem;
+            margin: 0 0 6px 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
         }
 
         .company-location {
             color: var(--text-light);
             font-size: 0.9rem;
             margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .company-location i {
+            margin-right: 4px;
+            font-size: 0.85rem;
         }
 
         .company-tags {
             display: flex;
             gap: 8px;
-            margin: 12px 0;
+            margin: 16px 0;
             flex-wrap: wrap;
         }
 
         .company-tag {
             background-color: var(--tag-bg);
             color: var(--primary-color);
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 500;
         }
 
         .open-positions {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--secondary-color);
             font-weight: 500;
-            margin-bottom: 15px;
-        }
-
-        .view-profile-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .view-profile-btn:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .bookmark-btn {
-            background-color: transparent;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            width: 36px;
-            height: 36px;
+            margin-bottom: 20px;
+            margin-top: auto;
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin-left: 10px;
-            transition: all 0.2s ease;
         }
 
-        .bookmark-btn:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
+        .open-positions i {
+            margin-right: 6px;
         }
 
         .company-actions {
             display: flex;
             align-items: center;
+            gap: 10px;
+        }
+
+        .company-actions .btn-primary {
+            flex: 1;
+            font-weight: 500;
+            padding: 10px 16px;
+            border-radius: 8px;
+        }
+
+        .company-actions .btn-outline-secondary {
+            border-radius: 8px;
+            color: var(--text-light);
+            border-color: var(--border-color);
+            padding: 0;
+        }
+
+        .company-actions .btn-outline-secondary:hover {
+            background-color: #f8fafc;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
         }
 
         /* Top Rated Companies Section */
@@ -474,6 +498,7 @@
         <div class="featured-companies">
             @forelse ($companies as $company)
                 <div class="company-card">
+                    <a href="{{ route('companies.show', $company) }}" class="company-card-link"></a>
                     <div class="company-card-content">
                         <div class="company-card-header">
                             <div class="company-logo">
@@ -486,7 +511,10 @@
                             </div>
                             <div class="company-info">
                                 <h3>{{ $company->name }}</h3>
-                                <p class="company-location">{{ $company->location }}</p>
+                                <p class="company-location">
+                                    <i class="bi bi-geo-alt"></i>
+                                    {{ $company->location }}
+                                </p>
                             </div>
                         </div>
 
@@ -497,14 +525,17 @@
                             @endif
                         </div>
 
-                        <p class="open-positions">{{ $company->listings_count }} open position(s)</p>
+                        <p class="open-positions">
+                            <i class="bi bi-briefcase"></i>
+                            {{ $company->listings_count }} open position(s)
+                        </p>
 
                         <div class="company-actions">
                             <a href="{{ route('companies.show', $company) }}" class="btn btn-primary">View Profile</a>
-                            <button class="btn btn-outline-secondary d-flex align-items-center justify-content-center"
+                            {{-- <button class="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                                 style="width: 38px; height: 38px;">
                                 <i class="bi bi-bookmark"></i>
-                            </button>
+                            </button> --}}
                         </div>
                     </div>
                 </div>
@@ -521,60 +552,43 @@
     </section>
 
     <!-- Top Rated Companies Section -->
-    <div class="top-rated-companies">
+    <div class="top-rated-companies" style="padding-left: 100px; padding-right: 100px;">
         <div class="filter-bar">
             <h2 class="section-title">Top Rated Companies</h2>
         </div>
 
-        <!-- Ranked Company 1 -->
-        <div class="ranked-company">
-            <div class="company-rank">#1</div>
-            <div class="ranked-company-logo">A</div>
-            <div class="ranked-company-info">
-                <h3 class="ranked-company-name">Apple</h3>
-                <div class="company-rating">
-                    <i class="bi bi-star-fill star-icon"></i>
-                    4.8 <span class="review-count">(2,345 reviews)</span>
-                </div>
-            </div>
-            <div class="positions-count">
-                <div class="position-number">12 positions</div>
-                <a href="#" class="view-details-link">View Details</a>
-            </div>
-        </div>
+        @php
+            // Get companies with the most internship listings, limited to top 3
+            $topCompanies = App\Models\Company::withCount('listings')->orderByDesc('listings_count')->limit(3)->get();
+        @endphp
 
-        <!-- Ranked Company 2 -->
-        <div class="ranked-company">
-            <div class="company-rank">#2</div>
-            <div class="ranked-company-logo">A</div>
-            <div class="ranked-company-info">
-                <h3 class="ranked-company-name">Amazon</h3>
-                <div class="company-rating">
-                    <i class="bi bi-star-fill star-icon"></i>
-                    4.7 <span class="review-count">(1,987 reviews)</span>
+        @forelse ($topCompanies as $index => $company)
+            <div class="ranked-company">
+                <div class="company-rank">#{{ $index + 1 }}</div>
+                <div class="ranked-company-logo">
+                    @if ($company->logo_url)
+                        <img src="{{ $company->logo_url }}" alt="{{ $company->name }} logo"
+                            style="width: 100%; height: 100%; object-fit: contain;">
+                    @else
+                        {{ substr($company->name, 0, 1) }}
+                    @endif
+                </div>
+                <div class="ranked-company-info">
+                    <h3 class="ranked-company-name">{{ $company->name }}</h3>
+                    <div class="company-rating">
+                        <i class="bi bi-building"></i>
+                        {{ $company->industry }} <span class="review-count">({{ $company->location }})</span>
+                    </div>
+                </div>
+                <div class="positions-count">
+                    <div class="position-number">{{ $company->listings_count }} position(s)</div>
+                    <a href="{{ route('companies.show', $company) }}" class="view-details-link">View Profile</a>
                 </div>
             </div>
-            <div class="positions-count">
-                <div class="position-number">28 positions</div>
-                <a href="#" class="view-details-link">View Details</a>
+        @empty
+            <div class="text-center py-4">
+                <p>No companies with open positions found.</p>
             </div>
-        </div>
-
-        <!-- Ranked Company 3 -->
-        <div class="ranked-company">
-            <div class="company-rank">#3</div>
-            <div class="ranked-company-logo">S</div>
-            <div class="ranked-company-info">
-                <h3 class="ranked-company-name">Spotify</h3>
-                <div class="company-rating">
-                    <i class="bi bi-star-fill star-icon"></i>
-                    4.6 <span class="review-count">(1,456 reviews)</span>
-                </div>
-            </div>
-            <div class="positions-count">
-                <div class="position-number">8 positions</div>
-                <a href="#" class="view-details-link">View Details</a>
-            </div>
-        </div>
+        @endforelse
     </div>
 @endsection

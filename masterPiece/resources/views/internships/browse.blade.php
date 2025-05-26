@@ -3,6 +3,9 @@
 @section('title', 'Browse Internships')
 
 @section('content')
+    <!-- Add CSRF Token meta tag for AJAX requests -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <style>
         :root {
             --primary-color: #0A66C2;
@@ -453,6 +456,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -460,25 +464,42 @@
         }
 
         /* Stagger animation for multiple cards */
-        .col:nth-child(1) .internship-card { animation-delay: 0.1s; }
-        .col:nth-child(2) .internship-card { animation-delay: 0.2s; }
-        .col:nth-child(3) .internship-card { animation-delay: 0.3s; }
-        .col:nth-child(4) .internship-card { animation-delay: 0.4s; }
-        .col:nth-child(5) .internship-card { animation-delay: 0.5s; }
-        .col:nth-child(6) .internship-card { animation-delay: 0.6s; }
+        .col:nth-child(1) .internship-card {
+            animation-delay: 0.1s;
+        }
+
+        .col:nth-child(2) .internship-card {
+            animation-delay: 0.2s;
+        }
+
+        .col:nth-child(3) .internship-card {
+            animation-delay: 0.3s;
+        }
+
+        .col:nth-child(4) .internship-card {
+            animation-delay: 0.4s;
+        }
+
+        .col:nth-child(5) .internship-card {
+            animation-delay: 0.5s;
+        }
+
+        .col:nth-child(6) .internship-card {
+            animation-delay: 0.6s;
+        }
     </style>
 
     <!-- Hero Section -->
-    <div class="hero-section">
+    <div class="companies-hero-section">
         <div class="container">
-            <div class="row align-items-center">
+            <div class="row align-items-center" style="padding: 60px 0px;">
                 <div class="col-lg-6">
                     <h1 class="display-5 fw-bold mb-3">Find Your Perfect Internship</h1>
                     <p class="lead mb-4">Browse through our collection of internship opportunities from top companies.
                     </p>
                 </div>
                 <div class="col-lg-6 text-center d-none d-lg-block">
-                    <img src="https://img.freepik.com/free-vector/internship-job-training-illustration_23-2148753901.jpg"
+                    <img src="https://t4.ftcdn.net/jpg/04/43/15/21/360_F_443152105_zb4YWg1Nj02NdzhjShsDCuHnMnoNxwse.jpg"
                         alt="Internship Illustration" class="img-fluid rounded-4"
                         style="max-height: 300px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));">
                 </div>
@@ -591,6 +612,9 @@
                 </div>
             @endif
 
+            <!-- Application Messages Container -->
+            <div id="applicationMessages"></div>
+
             <div class="row mb-4">
                 <div class="col">
                     <h2 class="fs-2 fw-bold">Available Internships</h2>
@@ -634,16 +658,19 @@
                                         </div>
                                         <div class="meta-item">
                                             <i class="fas fa-clock meta-icon"></i>
-                                            <span>{{ ucfirst($internship->internship_type) }} · {{ $internship->duration }}</span>
+                                            <span>{{ ucfirst($internship->internship_type) }} ·
+                                                {{ $internship->duration }}</span>
                                         </div>
                                         <div class="meta-item">
                                             <i class="fas fa-calendar-alt meta-icon"></i>
-                                            <span>Deadline: {{ \Carbon\Carbon::parse($internship->application_deadline)->format('M d, Y') }}</span>
+                                            <span>Deadline:
+                                                {{ \Carbon\Carbon::parse($internship->application_deadline)->format('M d, Y') }}</span>
                                         </div>
                                         <div class="meta-item">
                                             <i class="fas fa-dollar-sign meta-icon"></i>
-                                            @if($internship->salary_range)
-                                                <span class="compensation-highlight">{{ $internship->salary_range }}</span>
+                                            @if ($internship->salary_range)
+                                                <span
+                                                    class="compensation-highlight">{{ $internship->salary_range }}</span>
                                             @else
                                                 <span class="compensation-na">Not specified</span>
                                             @endif
@@ -652,22 +679,22 @@
 
                                     <!-- Skills Tags -->
                                     <div class="skills-section">
-                                        @if($internship->skills_required)
+                                        @if ($internship->skills_required)
                                             @php
-                                                $skillsArray = is_array($internship->skills_required) 
-                                                    ? $internship->skills_required 
+                                                $skillsArray = is_array($internship->skills_required)
+                                                    ? $internship->skills_required
                                                     : json_decode($internship->skills_required, true);
-                                                
+
                                                 if (!is_array($skillsArray)) {
                                                     $skillsArray = explode(',', $internship->skills_required);
                                                 }
                                             @endphp
-                                            
-                                            @foreach(array_slice($skillsArray, 0, 3) as $skill)
+
+                                            @foreach (array_slice($skillsArray, 0, 3) as $skill)
                                                 <span class="tag">{{ trim($skill) }}</span>
                                             @endforeach
-                                            
-                                            @if(count($skillsArray) > 3)
+
+                                            @if (count($skillsArray) > 3)
                                                 <span class="tag">+{{ count($skillsArray) - 3 }}</span>
                                             @endif
                                         @endif
@@ -675,9 +702,11 @@
 
                                     <!-- Card Actions -->
                                     <div class="card-actions">
-                                        <small class="posted-time">Posted {{ $internship->created_at->diffForHumans() }}</small>
+                                        <small class="posted-time">Posted
+                                            {{ $internship->created_at->diffForHumans() }}</small>
                                         <div class="d-flex gap-2">
-                                            <a href="{{ route('internships.show', $internship) }}" class="view-details-btn">
+                                            <a href="{{ route('internships.show', $internship) }}"
+                                                class="view-details-btn">
                                                 View Details
                                             </a>
                                             @auth
@@ -713,99 +742,218 @@
         </div>
     </section>
 
-    <!-- Quick Apply Modal -->
-    <div class="modal fade" id="quickApplyModal" tabindex="-1" aria-labelledby="quickApplyModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="quickApplyModalLabel">Quick Apply</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>You are about to apply for the position:</p>
-                    <h4 id="modal-internship-title"></h4>
-                    <p>at <span id="modal-company-name"></span></p>
-                    <p>This is a quick application that will be submitted using your profile information. You can provide
-                        additional details later.</p>
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i> Your application will be visible on your dashboard where you can
-                        add a cover letter or resume later.
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="confirmApplyButton">Confirm Application</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Success Modal -->
-    <div class="modal fade" id="applicationSuccessModal" tabindex="-1" aria-labelledby="successModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Application Successful</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <div class="my-4">
-                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
-                    </div>
-                    <h4>Your application has been submitted!</h4>
-                    <p class="text-muted">You can track the status of your application in your dashboard.</p>
-                </div>
-                <div class="modal-footer">
-                    <a href="{{ route('applications.index') }}" class="btn btn-primary">View My Applications</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Browsing</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     @push('styles')
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+        <style>
+            /* Message styles */
+            .application-message {
+                padding: 1rem;
+                border-radius: 0.5rem;
+                margin-bottom: 1.5rem;
+                position: relative;
+                animation: slideDown 0.3s ease-out;
+            }
+
+            .message-success {
+                background: linear-gradient(135deg, rgba(18, 183, 106, 0.15) 0%, rgba(18, 183, 106, 0.05) 100%);
+                border-left: 4px solid var(--success-color);
+                color: #065f43;
+            }
+
+            .message-error {
+                background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%);
+                border-left: 4px solid #ef4444;
+                color: #b91c1c;
+            }
+
+            /* Confirmation Message Box */
+            .confirmation-box {
+                padding: 1.25rem;
+                border-radius: 0.75rem;
+                margin-bottom: 1.5rem;
+                background: linear-gradient(135deg, rgba(10, 102, 194, 0.15) 0%, rgba(10, 102, 194, 0.05) 100%);
+                border-left: 4px solid var(--primary-color);
+                color: var(--text-dark);
+                animation: fadeIn 0.3s ease-out;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            }
+
+            .confirmation-title {
+                font-weight: 600;
+                font-size: 1.2rem;
+                margin-bottom: 0.75rem;
+                color: var(--primary-color);
+            }
+
+            .confirmation-buttons {
+                display: flex;
+                gap: 0.75rem;
+                margin-top: 1rem;
+            }
+
+            .confirm-btn {
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 0.5rem;
+                padding: 0.6rem 1.2rem;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+
+            .confirm-btn:hover {
+                background: var(--primary-hover);
+                transform: translateY(-2px);
+            }
+
+            .cancel-btn {
+                background: #e2e8f0;
+                color: #475569;
+                border: none;
+                border-radius: 0.5rem;
+                padding: 0.6rem 1.2rem;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+
+            .cancel-btn:hover {
+                background: #cbd5e1;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+        </style>
     @endpush
 
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                let currentInternshipId = null;
+                const messageContainer = document.getElementById('applicationMessages');
+                let activeConfirmation = null;
 
-                // Set up Quick Apply button click handlers
-                document.querySelectorAll('.quick-apply-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const internshipId = this.dataset.id;
-                        const internshipTitle = this.dataset.title;
-                        const companyName = this.dataset.company;
+                // Helper function to display messages
+                function showMessage(message, type) {
+                    // Create message element
+                    const messageElement = document.createElement('div');
+                    messageElement.className = `application-message message-${type}`;
 
-                        // Store the internship ID for submission
-                        currentInternshipId = internshipId;
+                    // Create icon based on message type
+                    const iconClass = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
 
-                        // Update modal content
-                        document.getElementById('modal-internship-title').textContent = internshipTitle;
-                        document.getElementById('modal-company-name').textContent = companyName;
+                    // Set message content
+                    messageElement.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <i class="${iconClass} me-2" style="font-size: 1.25rem;"></i>
+                            <div>
+                                <h5 class="mb-1">${type === 'success' ? 'Application Successful!' : 'Application Error'}</h5>
+                                <p class="mb-0">${message}</p>
+                                ${type === 'success' ? '<p class="mt-2 mb-0"><a href="/applications" class="text-decoration-none">View my applications</a></p>' : ''}
+                            </div>
+                            <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+                        </div>
+                    `;
 
-                        // Show the confirmation modal
-                        const quickApplyModal = new bootstrap.Modal(document.getElementById(
-                            'quickApplyModal'));
-                        quickApplyModal.show();
+                    // Add to container
+                    messageContainer.appendChild(messageElement);
+
+                    // Scroll to message if it's not in view
+                    messageElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest'
                     });
-                });
 
-                // Set up confirmation button handler
-                document.getElementById('confirmApplyButton').addEventListener('click', function() {
-                    // Disable button and show loading state
-                    this.disabled = true;
-                    this.innerHTML =
+                    // Auto-remove after delay (for success messages only)
+                    if (type === 'success') {
+                        setTimeout(() => {
+                            messageElement.style.opacity = '0';
+                            messageElement.style.transform = 'translateY(-10px)';
+                            messageElement.style.transition = 'all 0.3s ease-out';
+                            setTimeout(() => messageElement.remove(), 300);
+                        }, 8000);
+                    }
+                }
+
+                // Function to display confirmation box
+                function showConfirmation(internshipId, internshipTitle, companyName, applyBtn) {
+                    // Remove any existing confirmation box
+                    if (activeConfirmation) {
+                        activeConfirmation.remove();
+                        activeConfirmation = null;
+                    }
+
+                    // Create confirmation element
+                    const confirmationElement = document.createElement('div');
+                    confirmationElement.className = 'confirmation-box';
+                    confirmationElement.innerHTML = `
+                        <div class="confirmation-title">
+                            <i class="fas fa-question-circle me-2"></i> Apply for Internship?
+                        </div>
+                        <p>Are you sure you want to apply for <strong>${internshipTitle}</strong> at <strong>${companyName}</strong>?</p>
+                        <p class="text-muted">Your application will be submitted with your profile information. You can provide additional details later from your dashboard.</p>
+                        <div class="confirmation-buttons">
+                            <button type="button" class="confirm-btn" id="confirmApply">
+                                <i class="fas fa-check me-2"></i> Yes, Apply Now
+                            </button>
+                            <button type="button" class="cancel-btn" id="cancelApply">
+                                <i class="fas fa-times me-2"></i> Cancel
+                            </button>
+                        </div>
+                    `;
+
+                    // Add to container - at the top
+                    messageContainer.insertBefore(confirmationElement, messageContainer.firstChild);
+                    activeConfirmation = confirmationElement;
+
+                    // Scroll to confirmation box
+                    confirmationElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest'
+                    });
+
+                    // Set up confirmation button handlers
+                    document.getElementById('confirmApply').addEventListener('click', function() {
+                        submitApplication(internshipId, internshipTitle, companyName, applyBtn);
+                        confirmationElement.remove();
+                        activeConfirmation = null;
+                    });
+
+                    document.getElementById('cancelApply').addEventListener('click', function() {
+                        confirmationElement.remove();
+                        activeConfirmation = null;
+                    });
+                }
+
+                // Function to handle application submission
+                function submitApplication(internshipId, internshipTitle, companyName, applyBtn) {
+                    // Show loading state
+                    applyBtn.disabled = true;
+                    applyBtn.innerHTML =
                         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Applying...';
 
                     // Submit the application via AJAX
-                    fetch(`/internships/${currentInternshipId}/quick-apply`, {
+                    fetch(`/internships/${internshipId}/quick-apply`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -816,47 +964,73 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            // Hide the confirmation modal
-                            bootstrap.Modal.getInstance(document.getElementById('quickApplyModal')).hide();
+                            // Reset button state if there's an error
+                            if (!data.success) {
+                                applyBtn.disabled = false;
+                                applyBtn.innerHTML = 'Quick Apply';
 
-                            // Reset button state
-                            this.disabled = false;
-                            this.innerHTML = 'Confirm Application';
+                                // Check if it's an already applied error
+                                if (data.message && data.message.includes('already applied')) {
+                                    showMessage(
+                                        'You have already applied for this internship. You can track your application status in your applications dashboard.',
+                                        'error');
 
-                            if (data.success) {
-                                // Show success modal
-                                const successModal = new bootstrap.Modal(document.getElementById(
-                                    'applicationSuccessModal'));
-                                successModal.show();
-
-                                // Disable the apply button for this internship
-                                document.querySelectorAll(
-                                    `.quick-apply-btn[data-id="${currentInternshipId}"]`).forEach(
-                                    btn => {
-                                        btn.disabled = true;
-                                        btn.classList.remove('btn-primary');
-                                        btn.classList.add('btn-secondary');
-                                        btn.textContent = 'Applied';
-                                    });
-                            } else {
-                                // Show error message
-                                alert('Error: ' + data.message);
+                                    // Update button to show applied anyway
+                                    applyBtn.disabled = true;
+                                    applyBtn.classList.remove('quick-apply-btn');
+                                    applyBtn.classList.add('btn-secondary');
+                                    applyBtn.textContent = 'Applied';
+                                }
+                                return;
                             }
+
+                            // Show success message
+                            showMessage(
+                                `Your application for "${internshipTitle}" has been submitted successfully! You can track its status in your dashboard.`,
+                                'success');
+
+                            // Update button to show applied state
+                            applyBtn.disabled = true;
+                            applyBtn.classList.remove('quick-apply-btn');
+                            applyBtn.classList.add('btn-secondary');
+                            applyBtn.textContent = 'Applied';
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            alert(
-                                'An error occurred while submitting your application. Please try again later.'
-                                );
+
+                            // Don't show error message to user as requested
 
                             // Reset button state
-                            this.disabled = false;
-                            this.innerHTML = 'Confirm Application';
-
-                            // Hide the confirmation modal
-                            bootstrap.Modal.getInstance(document.getElementById('quickApplyModal')).hide();
+                            applyBtn.disabled = false;
+                            applyBtn.innerHTML = 'Quick Apply';
                         });
+                }
+
+                // Check if button should be disabled (user already applied)
+                function checkAlreadyApplied() {
+                    // Get all internship cards where user has already applied
+                    document.querySelectorAll('[data-applied="true"]').forEach(button => {
+                        button.disabled = true;
+                        button.classList.remove('quick-apply-btn');
+                        button.classList.add('btn-secondary');
+                        button.textContent = 'Applied';
+                    });
+                }
+
+                // Set up Quick Apply button click handlers
+                document.querySelectorAll('.quick-apply-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const internshipId = this.dataset.id;
+                        const internshipTitle = this.dataset.title;
+                        const companyName = this.dataset.company;
+
+                        // Show confirmation box instead of browser confirm
+                        showConfirmation(internshipId, internshipTitle, companyName, this);
+                    });
                 });
+
+                // Initialize
+                checkAlreadyApplied();
             });
         </script>
     @endpush

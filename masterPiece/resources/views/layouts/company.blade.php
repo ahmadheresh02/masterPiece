@@ -18,6 +18,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Custom Button Styles -->
+    <link href="{{ asset('css/buttons.css') }}" rel="stylesheet">
+
     <!-- Custom Styles -->
     <style>
         :root {
@@ -75,7 +78,7 @@
             position: relative;
             padding-bottom: 0.75rem;
         }
-        
+
         .section-title:after {
             content: '';
             position: absolute;
@@ -110,12 +113,12 @@
             border-collapse: separate;
             border-spacing: 0;
         }
-        
+
         .table thead th {
             font-weight: 600;
             border-bottom: 1px solid #e9ecef;
         }
-        
+
         .table tbody tr:hover {
             background-color: #f8f9fa;
         }

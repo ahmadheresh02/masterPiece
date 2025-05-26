@@ -17,6 +17,13 @@ class VerifiedCompanyMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // First ensure that user is authenticated - if not, redirect to login
+        if (!Auth::guard('web')->check() && !Auth::guard('company')->check()) {
+            return redirect()->route('login')
+                ->with('error', 'You must be logged in to access this page.')
+                ->with('intended', $request->url());
+        }
+
         // Check if authenticated user is a company
         $company = null;
         $isCompanyUser = false;
@@ -40,6 +47,12 @@ class VerifiedCompanyMiddleware
                 $company = $user->company;
                 $isCompanyUser = true;
             }
+        }
+
+        // If not a company user at all, redirect to home
+        if (!$isCompanyUser) {
+            return redirect()->route('home')
+                ->with('error', 'Only company accounts can access this area.');
         }
 
         // Only redirect to awaiting-approval if user is actually a company and not verified

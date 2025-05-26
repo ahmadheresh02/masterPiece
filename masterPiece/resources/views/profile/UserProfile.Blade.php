@@ -48,8 +48,6 @@
                         </p>
                         <div>
                             <a href="{{ route('profile.edit') }}" class="btn btn-primary me-2">Edit Profile</a>
-                            <button class="btn btn-outline-secondary"
-                                onclick="navigator.clipboard.writeText(window.location.href)">Share Profile</button>
                         </div>
                     </div>
                 </div>
@@ -59,7 +57,7 @@
         <div class="row g-4">
             <div class="col-lg-8">
                 <!-- About Section -->
-                <div class="card mb-4 shadow-sm border-0 rounded-3">
+                <div class="card mb-4 shadow-sm border-0 rounded-3" style="width: 100%;">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h3 class="card-title mb-0 fw-bold">About</h3>
@@ -69,7 +67,7 @@
                 </div>
 
                 <!-- Experience Section -->
-                <div class="card mb-4 shadow-sm border-0 rounded-3">
+                <div class="card mb-4 shadow-sm border-0 rounded-3" style="width: 100%;">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h3 class="card-title mb-0 fw-bold">Experience</h3>
@@ -102,7 +100,7 @@
                 </div>
 
                 <!-- Education Section -->
-                <div class="card mb-4 shadow-sm border-0 rounded-3">
+                <div class="card mb-4 shadow-sm border-0 rounded-3" style="width: 100%;">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h3 class="card-title mb-0 fw-bold">Education</h3>

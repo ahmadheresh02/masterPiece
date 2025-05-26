@@ -1,8 +1,10 @@
-<x-Layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="container py-5">
         <div class="row">
             <div class="col-12 mb-4">
-                <div class="card shadow border-0 rounded-3">
+                <div class="card shadow border-0 rounded-3" style="width:100%;">
                     <div class="card-body p-4">
                         <h2 class="mb-4 fw-bold">Edit Profile</h2>
 
@@ -41,8 +43,7 @@
 
                                     <div class="mb-3">
                                         <label for="first_name" class="form-label">First Name*</label>
-                                        <input type="text"
-                                            class="form-control @error('first_name') is-invalid @enderror"
+                                        <input type="text" class="form-control @error('first_name') is-invalid @enderror"
                                             id="first_name" name="first_name"
                                             value="{{ old('first_name', $user->first_name) }}" required>
                                         @error('first_name')
@@ -52,9 +53,9 @@
 
                                     <div class="mb-3">
                                         <label for="last_name" class="form-label">Last Name*</label>
-                                        <input type="text"
-                                            class="form-control @error('last_name') is-invalid @enderror" id="last_name"
-                                            name="last_name" value="{{ old('last_name', $user->last_name) }}" required>
+                                        <input type="text" class="form-control @error('last_name') is-invalid @enderror"
+                                            id="last_name" name="last_name" value="{{ old('last_name', $user->last_name) }}"
+                                            required>
                                         @error('last_name')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -62,9 +63,8 @@
 
                                     <div class="mb-3">
                                         <label for="headline" class="form-label">Headline</label>
-                                        <input type="text"
-                                            class="form-control @error('headline') is-invalid @enderror" id="headline"
-                                            name="headline" value="{{ old('headline', $user->headline) }}"
+                                        <input type="text" class="form-control @error('headline') is-invalid @enderror"
+                                            id="headline" name="headline" value="{{ old('headline', $user->headline) }}"
                                             placeholder="e.g. Computer Science Student">
                                         @error('headline')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -73,9 +73,8 @@
 
                                     <div class="mb-3">
                                         <label for="location" class="form-label">Location</label>
-                                        <input type="text"
-                                            class="form-control @error('location') is-invalid @enderror" id="location"
-                                            name="location" value="{{ old('location', $user->location) }}"
+                                        <input type="text" class="form-control @error('location') is-invalid @enderror"
+                                            id="location" name="location" value="{{ old('location', $user->location) }}"
                                             placeholder="e.g. Amman, Jordan">
                                         @error('location')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -119,8 +118,8 @@
                                             <option value="Master's"
                                                 {{ $user->education_level == "Master's" ? 'selected' : '' }}>Master's
                                                 Degree</option>
-                                            <option value="PhD"
-                                                {{ $user->education_level == 'PhD' ? 'selected' : '' }}>PhD</option>
+                                            <option value="PhD" {{ $user->education_level == 'PhD' ? 'selected' : '' }}>
+                                                PhD</option>
                                             <option value="Diploma"
                                                 {{ $user->education_level == 'Diploma' ? 'selected' : '' }}>Diploma
                                             </option>
@@ -148,8 +147,8 @@
                                         <input type="number"
                                             class="form-control @error('graduation_year') is-invalid @enderror"
                                             id="graduation_year" name="graduation_year"
-                                            value="{{ old('graduation_year', $user->graduation_year) }}"
-                                            min="2000" max="2100">
+                                            value="{{ old('graduation_year', $user->graduation_year) }}" min="2000"
+                                            max="2100">
                                         @error('graduation_year')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -181,7 +180,7 @@
                                     </div>
                                 </div>
                                 <!-- Note: For simplicity, we're just using a checkbox to indicate experience.
-                                     A more detailed experience section would require a different database structure. -->
+                                         A more detailed experience section would require a different database structure. -->
                             </div>
 
                             <!-- Skills Section -->
@@ -207,8 +206,7 @@
                                 <div class="mb-3">
                                     <label for="languages" class="form-label">Add languages you speak (comma
                                         separated)</label>
-                                    <input type="text"
-                                        class="form-control @error('languages') is-invalid @enderror"
+                                    <input type="text" class="form-control @error('languages') is-invalid @enderror"
                                         id="languages_input" name="languages"
                                         value="{{ old('languages', is_array($user->languages) ? implode(', ', $user->languages) : '') }}"
                                         placeholder="e.g. English, Arabic, French">
@@ -276,4 +274,4 @@
             });
         });
     </script>
-</x-Layout>
+@endsection

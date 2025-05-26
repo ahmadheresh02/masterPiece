@@ -4,15 +4,17 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="hero-section py-5">
+    <div class="companies-hero-section" style="padding: 2rem 0;">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-6 mb-5 mb-lg-0">
-                    <h1 class="display-4 fw-bold mb-4">Launch Your Career With The Right Internship</h1>
-                    <p class="lead mb-4">Connect with top companies offering meaningful internship experiences that match
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h1 class="display-4 fw-bold mb-3">Launch Your Career With The Right Internship</h1>
+                    <p class="lead mb-3">Connect with top companies offering meaningful internship experiences that match
                         your skills and ambitions.</p>
-                    <div class="d-flex gap-3 mb-5">
-                        <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Get Started</a>
+                    <div class="d-flex gap-3 mb-4">
+                        @guest
+                            <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Get Started</a>
+                        @endguest
                         <a href="{{ route('internships.index') }}" class="btn btn-outline-primary btn-lg">Browse
                             Internships</a>
                     </div>
@@ -37,8 +39,8 @@
                     </div>
                 </div>
                 <div class="col-lg-6 text-center">
-                    <img src="https://img.freepik.com/free-vector/internship-job-training-illustration_23-2148753901.jpg"
-                        alt="Internship Illustration" class="img-fluid rounded-4" style="max-height: 500px;">
+                    <img src="https://t4.ftcdn.net/jpg/05/46/01/69/360_F_546016914_qE7KlgNMJCzFSueLhBZ1Qo7NbmIVfu9e.jpg"
+                        alt="Internship Opportunity" class="img-fluid rounded-4" style="max-height: 380px;">
                 </div>
             </div>
         </div>
@@ -47,7 +49,7 @@
     <!-- Search Section -->
     <div class="bg-light py-5">
         <div class="container">
-            <div class="card border-0 shadow">
+            <div class="card border-0 shadow" style="width: 100%;">
                 <div class="card-body p-4">
                     <h2 class="section-title text-center mb-4">Find Your Perfect Internship</h2>
 
@@ -104,58 +106,6 @@
                                 <button type="submit" class="btn btn-primary w-100">
                                     <i class="fas fa-search me-2"></i> Search
                                 </button>
-                            </div>
-                        </div>
-
-                        <div class="mt-3">
-                            <a class="text-primary small" data-bs-toggle="collapse" href="#advancedFilters" role="button">
-                                <i class="fas fa-sliders-h me-1"></i> Advanced Filters
-                            </a>
-                        </div>
-
-                        <div class="collapse mt-3" id="advancedFilters">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label small fw-bold">Internship Type</label>
-                                    <div class="d-flex flex-wrap gap-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="paid" id="paidCheck"
-                                                value="1">
-                                            <label class="form-check-label" for="paidCheck">Paid</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="unpaid" id="unpaidCheck"
-                                                value="1">
-                                            <label class="form-check-label" for="unpaidCheck">Unpaid</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="credit"
-                                                id="creditCheck" value="1">
-                                            <label class="form-check-label" for="creditCheck">For Academic Credit</label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="form-label small fw-bold">Duration</label>
-                                    <select class="form-select" name="duration">
-                                        <option value="">Any Duration</option>
-                                        <option value="summer">Summer (2-3 months)</option>
-                                        <option value="semester">Semester (3-4 months)</option>
-                                        <option value="sixmonths">6 Months</option>
-                                        <option value="year">1 Year</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="form-label small fw-bold">Start Date</label>
-                                    <select class="form-select" name="start_date">
-                                        <option value="">Any Start Date</option>
-                                        <option value="immediate">Immediate</option>
-                                        <option value="summer">Summer 2025</option>
-                                        <option value="fall">Fall 2025</option>
-                                    </select>
-                                </div>
                             </div>
                         </div>
                     </form>
@@ -294,7 +244,7 @@
         <div class="container">
             <div class="row mb-5">
                 <div class="col-12 text-center">
-                    <h2 class="section-title">How InternMatch Works</h2>
+                    <h2 class="section-title">How InternConnect Works</h2>
                     <p class="text-muted">Your path to career success in three simple steps</p>
                 </div>
             </div>
@@ -355,52 +305,58 @@
                 </div>
             </div>
 
-            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-6 g-4 justify-content-center">
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-6 g-5 justify-content-center">
                 <div class="col text-center">
-                    <div class="card border-0 h-100">
-                        <div class="card-body">
+                    <div class="card border-0 h-100"
+                        style="border-radius: 10px; box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2); transition: all 0.3s ease; width: 215px;">
+                        <div class="card-body p-4">
                             <img src="https://logo.clearbit.com/google.com" alt="Google" class="img-fluid"
-                                style="max-height: 60px;">
+                                style="max-height: 60px; width: auto;">
                         </div>
                     </div>
                 </div>
                 <div class="col text-center">
-                    <div class="card border-0 h-100">
-                        <div class="card-body">
+                    <div class="card border-0 h-100"
+                        style="border-radius: 10px; box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2); transition: all 0.3s ease;width: 215px;">
+                        <div class="card-body p-4">
                             <img src="https://logo.clearbit.com/microsoft.com" alt="Microsoft" class="img-fluid"
-                                style="max-height: 60px;">
+                                style="max-height: 60px; width: auto;">
                         </div>
                     </div>
                 </div>
                 <div class="col text-center">
-                    <div class="card border-0 h-100">
-                        <div class="card-body">
+                    <div class="card border-0 h-100"
+                        style="border-radius: 10px; box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2); transition: all 0.3s ease; width: 215px;">
+                        <div class="card-body p-4">
                             <img src="https://logo.clearbit.com/amazon.com" alt="Amazon" class="img-fluid"
-                                style="max-height: 60px;">
+                                style="max-height: 60px; width: auto;">
                         </div>
                     </div>
                 </div>
                 <div class="col text-center">
-                    <div class="card border-0 h-100">
-                        <div class="card-body">
+                    <div class="card border-0 h-100"
+                        style="border-radius: 10px; box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2); transition: all 0.3s ease; width: 215px;">
+                        <div class="card-body p-4">
                             <img src="https://logo.clearbit.com/apple.com" alt="Apple" class="img-fluid"
-                                style="max-height: 60px;">
+                                style="max-height: 60px; width: auto;">
                         </div>
                     </div>
                 </div>
                 <div class="col text-center">
-                    <div class="card border-0 h-100">
-                        <div class="card-body">
+                    <div class="card border-0 h-100"
+                        style="border-radius: 10px; box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2); transition: all 0.3s ease; width: 215px;">
+                        <div class="card-body p-4">
                             <img src="https://logo.clearbit.com/tesla.com" alt="Tesla" class="img-fluid"
-                                style="max-height: 60px;">
+                                style="max-height: 60px; width: auto;">
                         </div>
                     </div>
                 </div>
                 <div class="col text-center">
-                    <div class="card border-0 h-100">
-                        <div class="card-body">
+                    <div class="card border-0 h-100"
+                        style="border-radius: 10px; box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2); transition: all 0.3s ease; width: 215px;">
+                        <div class="card-body p-4">
                             <img src="https://logo.clearbit.com/meta.com" alt="Meta" class="img-fluid"
-                                style="max-height: 60px;">
+                                style="max-height: 60px; width: auto;">
                         </div>
                     </div>
                 </div>
@@ -517,3 +473,21 @@
         </div>
     </div> --}}
 @endsection
+
+<style>
+    .company-logo-card {
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .company-logo-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(10, 102, 194, 0.15) !important;
+    }
+
+    /* Blue shadow for company logo cards */
+    .company-logo-card {
+        box-shadow: 0 4px 12px rgba(10, 102, 194, 0.08);
+    }
+</style>

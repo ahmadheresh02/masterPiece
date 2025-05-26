@@ -329,9 +329,9 @@
                                     <i class="bi bi-globe me-2"></i> Visit Website
                                 </a>
                             @endif
-                            <button class="btn btn-outline-light">
+                            {{-- <button class="btn btn-outline-light">
                                 <i class="bi bi-bookmark me-2"></i> Save
-                            </button>
+                            </button> --}}
                         </div>
                     </div>
                 </div>
@@ -460,9 +460,9 @@
                                             <a href="{{ route('internships.show', $listing) }}" class="btn btn-primary">
                                                 <i class="bi bi-eye me-2"></i> View Details
                                             </a>
-                                            <button class="btn btn-outline-secondary d-flex align-items-center">
+                                            {{-- <button class="btn btn-outline-secondary d-flex align-items-center">
                                                 <i class="bi bi-bookmark me-2"></i> Save
-                                            </button>
+                                            </button> --}}
                                         </div>
                                     </div>
                                 @endforeach

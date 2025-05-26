@@ -16,7 +16,8 @@ class ApplicationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // Apply auth middleware to all methods except those specified
+        $this->middleware('auth:web,company');
     }
 
     /**
@@ -70,8 +71,28 @@ class ApplicationController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(InternshipListing $internship)
+    public function create(Request $request, $internshipId = null)
     {
+        // If internship is passed through route model binding
+        if ($internshipId === null && $request->route('internship')) {
+            $internship = $request->route('internship');
+        } else {
+            // Make sure internshipId is a valid integer
+            $internshipId = is_numeric($internshipId) ? (int) $internshipId : null;
+
+            // Or if it's in the request
+            if ($internshipId === null && $request->has('internship')) {
+                $internshipId = is_numeric($request->internship) ? (int) $request->internship : null;
+            }
+
+            if ($internshipId === null) {
+                return redirect()->route('internships.index')
+                    ->with('error', 'Invalid internship selected. Please try again.');
+            }
+
+            $internship = InternshipListing::findOrFail($internshipId);
+        }
+
         $user = Auth::user();
 
         // Check if the user is not a company
@@ -90,7 +111,7 @@ class ApplicationController extends Controller
             ->first();
 
         if ($existingApplication) {
-            return redirect()->route('home')->with('error', 'You have already applied for this internship');
+            return redirect()->route('home')->with('error', 'You have already applied for this internship. You can track your application status in your applications dashboard.');
         }
 
         return view('applications.create', compact('internship'));
@@ -119,7 +140,7 @@ class ApplicationController extends Controller
             ->first();
 
         if ($existingApplication) {
-            return redirect()->route('home')->with('error', 'You have already applied for this internship');
+            return redirect()->route('home')->with('error', 'You have already applied for this internship. You can track your application status in your applications dashboard.');
         }
 
         $validated = $request->validate([
@@ -197,16 +218,25 @@ class ApplicationController extends Controller
      */
     public function updateStatus(Request $request, Application $application)
     {
-        $user = Auth::user();
-
         try {
-            // Check if user is the owner of the company that posted the internship
-            // Add null checks to prevent 'Attempt to read property id on null'
+            // Get user from appropriate guard
+            $user = null;
+            $company = null;
+
+            if (Auth::guard('web')->check()) {
+                $user = Auth::guard('web')->user();
+                if ($user->company) {
+                    $company = $user->company;
+                }
+            } elseif (Auth::guard('company')->check()) {
+                $company = Auth::guard('company')->user();
+            }
+
+            // Check company authorization
             if (
-                !$user->company ||
+                !$company ||
                 !$application->internshipListing ||
-                !$application->internshipListing->company_id ||
-                $user->company->id !== $application->internshipListing->company_id
+                $application->internshipListing->company_id != $company->id
             ) {
                 return redirect()->route('home')->with('error', 'You are not authorized to update this application');
             }
@@ -228,7 +258,7 @@ class ApplicationController extends Controller
         } catch (\Exception $e) {
             // Log the error
             \Log::error('Application status update error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Unable to update application status');
+            return redirect()->back()->with('error', 'Unable to update application status: ' . $e->getMessage());
         }
     }
 
@@ -299,30 +329,46 @@ class ApplicationController extends Controller
 
         if ($existingApplication) {
             if ($request->ajax()) {
-                return response()->json(['success' => false, 'message' => 'You have already applied for this internship'], 400);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You have already applied for this internship. You can track your application status in your applications dashboard.'
+                ], 400);
             }
-            return redirect()->back()->with('error', 'You have already applied for this internship');
+            return redirect()->back()->with('error', 'You have already applied for this internship. You can track your application status in your applications dashboard.');
         }
 
-        // Create a basic application without cover letter/resume
-        $application = new Application([
-            'user_id' => $user->id,
-            'listing_id' => $internship->id,
-            'cover_letter' => 'Quick application submitted from browse page.',
-            'status' => 'pending',
-        ]);
-
-        $application->save();
-
-        // Return JSON response for AJAX requests
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Your application has been submitted successfully!',
-                'application' => $application
+        try {
+            // Create a basic application without resume
+            $application = new Application([
+                'user_id' => $user->id,
+                'listing_id' => $internship->id,
+                'cover_letter' => 'Quick application submitted from browse page.',
+                'status' => 'pending',
+                // Use user's default resume if available, otherwise leave null
+                'resume_path' => $user->default_resume_path ?? null,
             ]);
-        }
 
-        return redirect()->route('applications.index')->with('success', 'Your application has been submitted successfully! You can update it with more details from your dashboard.');
+            $application->save();
+
+            // Return JSON response for AJAX requests
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Your application has been submitted successfully!',
+                    'application' => $application
+                ]);
+            }
+
+            return redirect()->route('applications.index')->with('success', 'Your application has been submitted successfully! You can update it with more details from your dashboard.');
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Quick application submission error: ' . $e->getMessage());
+
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
+            }
+
+            return redirect()->back()->with('error', 'An error occurred while submitting your application. Please try again later.');
+        }
     }
 }

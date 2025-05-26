@@ -37,15 +37,15 @@
                         @endif
 
                         <!-- Contact Information -->
-                        <div class="d-flex justify-content-center mb-3">
-                            <div class="px-3 border-end">
-                                <i class="bi bi-envelope-fill text-muted"></i>
-                                <a href="mailto:{{ $user->email }}" class="text-decoration-none">Email</a>
+                        <div class="contact-info mb-3">
+                            <div class="mb-2">
+                                <i class="bi bi-envelope-fill text-muted me-2"></i>
+                                <a href="mailto:{{ $user->email }}" class="text-decoration-none">{{ $user->email }}</a>
                             </div>
                             @if ($user->phone)
-                                <div class="px-3">
-                                    <i class="bi bi-telephone-fill text-muted"></i>
-                                    <a href="tel:{{ $user->phone }}" class="text-decoration-none">Phone</a>
+                                <div class="mb-2">
+                                    <i class="bi bi-telephone-fill text-muted me-2"></i>
+                                    <a href="tel:{{ $user->phone }}" class="text-decoration-none">{{ $user->phone }}</a>
                                 </div>
                             @endif
                         </div>

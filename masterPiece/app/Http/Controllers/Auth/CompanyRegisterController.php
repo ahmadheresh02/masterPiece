@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class CompanyRegisterController extends Controller
 {
@@ -18,6 +19,11 @@ class CompanyRegisterController extends Controller
      */
     public function showRegistrationForm()
     {
+        // Check if the user is already an admin, redirect to dashboard if so
+        if (Auth::check() && Auth::user()->is_admin) {
+            return redirect()->route('admin.dashboard');
+        }
+
         return view('auth.company-register');
     }
 
@@ -70,8 +76,16 @@ class CompanyRegisterController extends Controller
             'is_verified' => false, // Companies start as unverified
         ]);
 
-        // You might want to log the company in or redirect to a verification page
-        // For now, let's redirect to the login page with a success message
+        // Authenticate the company
+        Auth::guard('company')->login($company);
+
+        // Check if the company is registered by an admin
+        if (Auth::check() && Auth::user()->is_admin) {
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Company has been registered successfully!');
+        }
+
+        // For regular users, redirect to login
         return redirect()->route('login')
             ->with('success', 'Your company has been registered successfully! Please log in.');
     }

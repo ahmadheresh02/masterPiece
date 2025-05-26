@@ -1,164 +1,180 @@
-<x-layout>
-    <div class="hero-section">
-        <div class="container mx-auto py-8">
-            <div class="max-w-3xl mx-auto px-4">
-                <!-- Progress Bar -->
-                <div class="mb-8">
-                    <div class="flex justify-between mb-2"
-                        style="display: flex; justify-content: center; align-items: center; gap: 355px;">
-                        <div class="flex items-center">
-                            <div
-                                class="w-10 h-10 rounded-full flex items-center justify-center {{ $step >= 1 ? 'bg-[var(--primary-color)] text-white' : 'bg-gray-200' }}">
-                                <i class="fas fa-user"></i>
+@extends('layouts.app')
+
+@section('content')
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="mb-5">
+                    <!-- Progress Tracker -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="position-relative">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center {{ $step >= 1 ? 'bg-primary' : 'bg-light' }}"
+                                    style="width: 48px; height: 48px; {{ $step >= 1 ? 'color: white;' : 'color: #64748B;' }}">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="position-absolute" style="bottom: -20px; width: 100%; text-align: center;">
+                                    <span class="small fw-medium">Account</span>
+                                </div>
                             </div>
-                            <span class="ml-2 text-sm font-medium text-white">Account</span>
-                        </div>
-                        <div class="flex items-center">
-                            <div
-                                class="w-10 h-10 rounded-full flex items-center justify-center {{ $step >= 2 ? 'bg-[var(--primary-color)] text-white' : 'bg-gray-200' }}">
-                                <i class="fas fa-book-open"></i>
+                            <div class="progress flex-grow-1 mx-3" style="height: 2px;">
+                                <div class="progress-bar {{ $step >= 2 ? 'bg-primary' : 'bg-light' }}" style="width: 100%">
+                                </div>
                             </div>
-                            <span class="ml-2 text-sm font-medium text-white">Education</span>
                         </div>
-                        <div class="flex items-center">
-                            <div
-                                class="w-10 h-10 rounded-full flex items-center justify-center {{ $step >= 3 ? 'bg-[var(--primary-color)] text-white' : 'bg-gray-200' }}">
+
+                        <div class="d-flex align-items-center">
+                            <div class="position-relative">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center {{ $step >= 2 ? 'bg-primary' : 'bg-light' }}"
+                                    style="width: 48px; height: 48px; {{ $step >= 2 ? 'color: white;' : 'color: #64748B;' }}">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <div class="position-absolute" style="bottom: -20px; width: 100%; text-align: center;">
+                                    <span class="small fw-medium">Education</span>
+                                </div>
+                            </div>
+                            <div class="progress flex-grow-1 mx-3" style="height: 2px;">
+                                <div class="progress-bar {{ $step >= 3 ? 'bg-primary' : 'bg-light' }}" style="width: 100%">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="position-relative">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center {{ $step >= 3 ? 'bg-primary' : 'bg-light' }}"
+                                style="width: 48px; height: 48px; {{ $step >= 3 ? 'color: white;' : 'color: #64748B;' }}">
                                 <i class="fas fa-briefcase"></i>
                             </div>
-                            <span class="ml-2 text-sm font-medium text-white">Experience</span>
+                            <div class="position-absolute" style="bottom: -20px; width: 100%; text-align: center;">
+                                <span class="small fw-medium">Experience</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="overflow-hidden h-2 bg-gray-200 rounded-full">
-                        <div class="h-full bg-[var(--secondary-color)] rounded-full transition-all duration-300"
-                            style="width: {{ ($step / 3) * 100 }}%"></div>
+
+                    <!-- Progress bar -->
+                    <div class="progress mt-4" style="height: 6px;">
+                        <div class="progress-bar bg-success" style="width: {{ ($step / 3) * 100 }}%"></div>
                     </div>
                 </div>
 
-                <div class="search-container glass-card p-6">
-                    <h1 class="search-title mb-6">Join Our Internship Platform</h1>
+                <div class="auth-wrapper">
+                    <div class="auth-header">
+                        <h1>Create Your Account</h1>
+                        <p>Join InternConnect to find your perfect internship</p>
+                    </div>
 
-                    @if ($errors->any())
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                    <div class="auth-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger mb-4">
+                                <ul class="mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
-                    {{-- Step 1: Account Information --}}
-                    @if ($step == 1)
-                        <form action="{{ route('register.step1.post') }}" method="POST">
-                            @csrf
-                            <div class="space-y-4">
-                                <h2 class="text-xl font-semibold mb-4 text-[var(--text-dark)]">Account Information</h2>
+                        {{-- Step 1: Account Information --}}
+                        @if ($step == 1)
+                            <form action="{{ route('register.step1.post') }}" method="POST">
+                                @csrf
+                                <h4 class="mb-4">Account Information</h4>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="first_name"
-                                            class="block text-sm font-medium text-[var(--text-dark)] mb-1">First
-                                            Name*</label>
-                                        <input type="text" name="first_name" id="first_name"
-                                            value="{{ old('first_name', session('registration.first_name')) }}"
-                                            class="search-input px-3 py-2 @error('first_name') border-red-500 @enderror"
-                                            required>
-                                        @error('first_name')
-                                            <p class="text-red-500 text-xs mt-1">{{ $errors->first('first_name') }}</p>
-                                        @enderror
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="form-floating">
+                                                <input type="text" name="first_name" id="first_name"
+                                                    value="{{ old('first_name', session('registration.first_name')) }}"
+                                                    class="form-control @error('first_name') is-invalid @enderror"
+                                                    placeholder="First Name" required>
+                                                <label for="first_name">First Name*</label>
+                                                @error('first_name')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label for="last_name"
-                                            class="block text-sm font-medium text-[var(--text-dark)] mb-1">Last
-                                            Name*</label>
-                                        <input type="text" name="last_name" id="last_name"
-                                            value="{{ old('last_name', session('registration.last_name')) }}"
-                                            class="search-input px-3 py-2 @error('last_name') border-red-500 @enderror"
-                                            required>
-                                        @error('last_name')
-                                            <p class="text-red-500 text-xs mt-1">{{ $errors->first('last_name') }}</p>
-                                        @enderror
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="form-floating">
+                                                <input type="text" name="last_name" id="last_name"
+                                                    value="{{ old('last_name', session('registration.last_name')) }}"
+                                                    class="form-control @error('last_name') is-invalid @enderror"
+                                                    placeholder="Last Name" required>
+                                                <label for="last_name">Last Name*</label>
+                                                @error('last_name')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label for="email"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">Email
-                                        Address*</label>
-                                    <div class="search-input-wrapper">
-                                        <i class="fas fa-envelope search-icon-left"></i>
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <input type="email" name="email" id="email"
                                             value="{{ old('email', session('registration.email')) }}"
-                                            class="search-input @error('email') border-red-500 @enderror" required>
+                                            class="form-control @error('email') is-invalid @enderror"
+                                            placeholder="Email Address" required>
+                                        <label for="email">Email Address*</label>
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('email')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('email') }}</p>
-                                    @enderror
                                 </div>
 
-                                <div>
-                                    <label for="password"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">Password*</label>
-                                    <div class="search-input-wrapper">
-                                        <i class="fas fa-lock search-icon-left"></i>
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <input type="password" name="password" id="password"
-                                            class="search-input @error('password') border-red-500 @enderror" required>
+                                            class="form-control @error('password') is-invalid @enderror"
+                                            placeholder="Password" required>
+                                        <label for="password">Password*</label>
+                                        @error('password')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    <p class="text-xs text-[var(--text-light)] mt-1">Must be at least 8 characters</p>
-                                    @error('password')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('password') }}</p>
-                                    @enderror
+                                    <small class="form-text text-muted">Must be at least 8 characters</small>
                                 </div>
 
-                                <div>
-                                    <label for="password_confirmation"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">Confirm
-                                        Password*</label>
-                                    <div class="search-input-wrapper">
-                                        <i class="fas fa-lock search-icon-left"></i>
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <input type="password" name="password_confirmation" id="password_confirmation"
-                                            class="search-input" required>
+                                            class="form-control" placeholder="Confirm Password" required>
+                                        <label for="password_confirmation">Confirm Password*</label>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="search-button-container flex justify-end mt-8" style="padding-top: 20px;">
-                                <button type="submit" class="search-btn">
-                                    <span class="mr-1">Next</span>
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
-                            </div>
-                        </form>
-                    @endif
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="submit" class="btn btn-auth">
+                                        Next <i class="fas fa-chevron-right ms-1"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        @endif
 
-                    {{-- Step 2: Education --}}
-                    @if ($step == 2)
-                        <form action="{{ route('register.step2.post') }}" method="POST">
-                            @csrf
-                            <div class="space-y-4">
-                                <h2 class="text-xl font-semibold mb-4 text-[var(--text-dark)]">Education Details </h2>
+                        {{-- Step 2: Education --}}
+                        @if ($step == 2)
+                            <form action="{{ route('register.step2.post') }}" method="POST">
+                                @csrf
+                                <h4 class="mb-4">Education Details</h4>
 
-                                <div>
-                                    <label for="university_name"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">University/Institution
-                                    </label>
-                                    <div class="search-input-wrapper">
-                                        <i class="fas fa-university search-icon-left"></i>
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <input type="text" name="university_name" id="university_name"
                                             value="{{ old('university_name', session('registration.university_name')) }}"
-                                            class="search-input @error('university_name') border-red-500 @enderror"
-                                            placeholder="e.g. Stanford University">
+                                            class="form-control @error('university_name') is-invalid @enderror"
+                                            placeholder="University/Institution">
+                                        <label for="university_name">University/Institution</label>
+                                        @error('university_name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('university_name')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('university_name') }}</p>
-                                    @enderror
                                 </div>
 
-                                <div>
-                                    <label for="education_level" class="filter-label">Education Level</label>
-                                    <div class="select-wrapper">
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <select name="education_level" id="education_level"
-                                            class="filter-select @error('education_level') border-red-500 @enderror">
+                                            class="form-control @error('education_level') is-invalid @enderror">
                                             <option value="">Select your education level</option>
                                             <option value="High School"
                                                 {{ old('education_level', session('registration.education_level')) == 'High School' ? 'selected' : '' }}>
@@ -179,241 +195,189 @@
                                                 {{ old('education_level', session('registration.education_level')) == 'Other' ? 'selected' : '' }}>
                                                 Other</option>
                                         </select>
-                                        <div class="select-icon">
-                                            <i class="fas fa-chevron-down"></i>
-                                        </div>
+                                        <label for="education_level">Education Level</label>
+                                        @error('education_level')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('education_level')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('education_level') }}</p>
-                                    @enderror
                                 </div>
 
-                                <div>
-                                    <label for="major_field"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">Field of
-                                        Study/Major</label>
-                                    <div class="search-input-wrapper">
-                                        <i class="fas fa-graduation-cap search-icon-left"></i>
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <input type="text" name="major_field" id="major_field"
                                             value="{{ old('major_field', session('registration.major_field')) }}"
-                                            class="search-input @error('major_field') border-red-500 @enderror"
-                                            placeholder="e.g. Computer Science">
+                                            class="form-control @error('major_field') is-invalid @enderror"
+                                            placeholder="Field of Study/Major">
+                                        <label for="major_field">Field of Study/Major</label>
+                                        @error('major_field')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('major_field')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('major_field') }}</p>
-                                    @enderror
                                 </div>
 
-                                <div>
-                                    <label for="graduation_year" class="filter-label">Graduation Year</label>
-                                    <div class="select-wrapper">
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <select name="graduation_year" id="graduation_year"
-                                            class="filter-select @error('graduation_year') border-red-500 @enderror">
+                                            class="form-control @error('graduation_year') is-invalid @enderror">
                                             <option value="">Select year</option>
                                             @for ($year = date('Y') + 5; $year >= date('Y') - 4; $year--)
                                                 <option value="{{ $year }}"
                                                     {{ old('graduation_year', session('registration.graduation_year')) == $year ? 'selected' : '' }}>
-                                                    {{ $year }}</option>
+                                                    {{ $year }}
+                                                </option>
                                             @endfor
                                         </select>
-                                        <div class="select-icon">
-                                            <i class="fas fa-chevron-down"></i>
-                                        </div>
+                                        <label for="graduation_year">Graduation Year</label>
+                                        @error('graduation_year')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('graduation_year')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('graduation_year') }}</p>
-                                    @enderror
                                 </div>
-                            </div>
 
-                            <div class="flex justify-between mt-8" style="padding-top: 20px;">
-                                <a href="{{ route('register.step1') }}"
-                                    class="flex items-center px-4 py-2 bg-[var(--tag-bg)] text-[var(--tag-text)] rounded-md hover:bg-gray-300 transition-all">
-                                    <i class="fas fa-chevron-left mr-1"></i>
-                                    <span>Previous</span>
-                                </a>
-                                <button type="submit" class="search-btn">
-                                    <span class="mr-1">Next</span>
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
-                            </div>
-                        </form>
-                    @endif
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{{ route('register.step1') }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-chevron-left me-1"></i> Previous
+                                    </a>
+                                    <button type="submit" class="btn btn-auth">
+                                        Next <i class="fas fa-chevron-right ms-1"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        @endif
 
-                    {{-- Step 3: Experience & Profile --}}
-                    @if ($step == 3)
-                        <form action="{{ route('register.step3.post') }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            <div class="space-y-4">
-                                <h2 class="text-xl font-semibold mb-4 text-[var(--text-dark)]">Experience & Profile
-                                </h2>
+                        {{-- Step 3: Experience & Profile --}}
+                        @if ($step == 3)
+                            <form action="{{ route('register.step3.post') }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <h4 class="mb-4">Experience & Profile</h4>
 
-                                <div class="custom-checkbox mb-4">
+                                <div class="form-check mb-4">
                                     <input type="checkbox" id="has_experience" name="has_experience" value="1"
                                         {{ old('has_experience', session('registration.has_experience')) ? 'checked' : '' }}
                                         class="form-check-input">
-                                    <label for="has_experience"
-                                        class="form-check-label ml-2 text-sm font-medium text-[var(--text-dark)]">
+                                    <label for="has_experience" class="form-check-label">
                                         I have relevant work experience
                                     </label>
                                 </div>
 
-                                <div>
-                                    <label for="skills"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">Skills
-                                        (Optional)</label>
-                                    <div class="search-input-wrapper">
-                                        <i class="fas fa-tools search-icon-left"></i>
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <input type="text" name="skills" id="skills"
                                             value="{{ old('skills', session('registration.skills')) }}"
-                                            class="search-input @error('skills') border-red-500 @enderror"
-                                            placeholder="e.g. JavaScript, Python, Project Management">
+                                            class="form-control @error('skills') is-invalid @enderror"
+                                            placeholder="Skills">
+                                        <label for="skills">Skills (Optional)</label>
+                                        @error('skills')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('skills')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('skills') }}</p>
-                                    @enderror
+                                    <small class="form-text text-muted">e.g. JavaScript, Python, Project Management</small>
                                 </div>
 
-                                <div>
-                                    <label for="phone"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">Phone Number
-                                        (Optional)</label>
-                                    <div class="search-input-wrapper">
-                                        <i class="fas fa-phone search-icon-left"></i>
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <input type="tel" name="phone" id="phone"
                                             value="{{ old('phone', session('registration.phone')) }}"
-                                            class="search-input @error('phone') border-red-500 @enderror"
-                                            placeholder="e.g. +1 (555) 123-4567">
+                                            class="form-control @error('phone') is-invalid @enderror"
+                                            placeholder="Phone Number">
+                                        <label for="phone">Phone Number (Optional)</label>
+                                        @error('phone')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('phone')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('phone') }}</p>
-                                    @enderror
                                 </div>
 
-                                <div>
-                                    <label for="headline"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">Professional
-                                        Headline (Optional)</label>
-                                    <div class="search-input-wrapper">
-                                        <i class="fas fa-heading search-icon-left"></i>
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <input type="text" name="headline" id="headline"
                                             value="{{ old('headline', session('registration.headline')) }}"
-                                            class="search-input @error('headline') border-red-500 @enderror"
-                                            placeholder="e.g. Computer Science Student | Web Developer">
+                                            class="form-control @error('headline') is-invalid @enderror"
+                                            placeholder="Professional Headline">
+                                        <label for="headline">Professional Headline (Optional)</label>
+                                        @error('headline')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('headline')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('headline') }}</p>
-                                    @enderror
+                                    <small class="form-text text-muted">e.g. Computer Science Student | Web
+                                        Developer</small>
                                 </div>
 
-                                <div>
-                                    <label for="location"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">Location
-                                        (Optional)</label>
-                                    <div class="search-input-wrapper">
-                                        <i class="fas fa-map-marker-alt search-icon-left"></i>
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <input type="text" name="location" id="location"
                                             value="{{ old('location', session('registration.location')) }}"
-                                            class="search-input @error('location') border-red-500 @enderror"
-                                            placeholder="e.g. San Francisco, CA">
+                                            class="form-control @error('location') is-invalid @enderror"
+                                            placeholder="Location">
+                                        <label for="location">Location (Optional)</label>
+                                        @error('location')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('location')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('location') }}</p>
-                                    @enderror
                                 </div>
 
-                                <div>
-                                    <label for="languages"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">Languages
-                                        (Optional)</label>
-                                    <div class="search-input-wrapper">
-                                        <i class="fas fa-language search-icon-left"></i>
+                                <div class="form-group">
+                                    <div class="form-floating">
                                         <input type="text" name="languages" id="languages"
                                             value="{{ old('languages', session('registration.languages')) }}"
-                                            class="search-input @error('languages') border-red-500 @enderror"
-                                            placeholder="e.g. English, Spanish, Mandarin">
+                                            class="form-control @error('languages') is-invalid @enderror"
+                                            placeholder="Languages">
+                                        <label for="languages">Languages (Optional)</label>
+                                        @error('languages')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('languages')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('languages') }}</p>
-                                    @enderror
+                                    <small class="form-text text-muted">e.g. English, Spanish, Mandarin</small>
                                 </div>
 
-                                <div>
-                                    <label for="about"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">About Me
-                                        (Optional)</label>
-                                    <textarea name="about" id="about" rows="3"
-                                        class="w-full px-3 py-2 border border-[var(--border-color)] rounded-md @error('about') border-red-500 @enderror"
+                                <div class="form-group">
+                                    <label for="about" class="form-label">About Me (Optional)</label>
+                                    <textarea name="about" id="about" rows="3" class="form-control @error('about') is-invalid @enderror"
                                         placeholder="Tell us a bit about yourself...">{{ old('about', session('registration.about')) }}</textarea>
                                     @error('about')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('about') }}</p>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                <div>
-                                    <label for="profile_picture"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">Profile Picture
-                                        (Optional)</label>
-                                    <div
-                                        class="border border-dashed border-[var(--border-color)] rounded-md p-4 text-center">
-                                        <i class="fas fa-cloud-upload-alt text-4xl text-[var(--text-light)] mb-2"></i>
-                                        <p class="text-sm text-[var(--text-light)] mb-2">Drag and drop your profile
-                                            picture here, or click to browse</p>
+                                <div class="mb-3">
+                                    <label for="profile_picture" class="form-label">Profile Picture (Optional)</label>
+                                    <div class="input-group">
                                         <input type="file" name="profile_picture" id="profile_picture"
-                                            class="w-full opacity-0 absolute inset-0 cursor-pointer" accept="image/*"
-                                            style="height: 100px">
-                                        <button type="button"
-                                            class="px-4 py-2 bg-[var(--tag-bg)] text-[var(--tag-text)] rounded-md hover:bg-gray-300 transition-all">
-                                            Choose File
-                                        </button>
+                                            class="form-control @error('profile_picture') is-invalid @enderror"
+                                            accept="image/*">
+                                        @error('profile_picture')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('profile_picture')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('profile_picture') }}</p>
-                                    @enderror
                                 </div>
 
-                                <div>
-                                    <label for="resume"
-                                        class="block text-sm font-medium text-[var(--text-dark)] mb-1">Resume
-                                        (Optional)</label>
-                                    <div
-                                        class="border border-dashed border-[var(--border-color)] rounded-md p-4 text-center">
-                                        <i class="fas fa-file-pdf text-4xl text-[var(--text-light)] mb-2"></i>
-                                        <p class="text-sm text-[var(--text-light)] mb-2">Drag and drop your resume
-                                            here, or click to browse</p>
+                                <div class="mb-4">
+                                    <label for="resume" class="form-label">Resume (Optional)</label>
+                                    <div class="input-group">
                                         <input type="file" name="resume" id="resume"
-                                            class="w-full opacity-0 absolute inset-0 cursor-pointer"
-                                            accept=".pdf,.doc,.docx" style="height: 100px">
-                                        <button type="button"
-                                            class="px-4 py-2 bg-[var(--tag-bg)] text-[var(--tag-text)] rounded-md hover:bg-gray-300 transition-all">
-                                            Choose File
-                                        </button>
+                                            class="form-control @error('resume') is-invalid @enderror"
+                                            accept=".pdf,.doc,.docx">
+                                        @error('resume')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    <p class="text-xs text-[var(--text-light)] mt-1">Accepted formats: PDF, DOC, DOCX.
-                                        Maximum size: 5MB</p>
-                                    @error('resume')
-                                        <p class="text-red-500 text-xs mt-1">{{ $errors->first('resume') }}</p>
-                                    @enderror
+                                    <small class="form-text text-muted">Accepted formats: PDF, DOC, DOCX. Maximum size:
+                                        5MB</small>
                                 </div>
-                            </div>
 
-                            <div class="flex justify-between mt-8" style="padding-top: 20px;">
-                                <a href="{{ route('register.step2') }}"
-                                    class="flex items-center px-4 py-2 bg-[var(--tag-bg)] text-[var(--tag-text)] rounded-md hover:bg-gray-300 transition-all">
-                                    <i class="fas fa-chevron-left mr-1"></i>
-                                    <span>Previous</span>
-                                </a>
-                                <button type="submit"
-                                    class="search-btn bg-[var(--secondary-color)] hover:bg-[#129d72]">
-                                    {{-- <i class="fas fa-check mr-1"></i> --}}
-                                    Complete Registration
-                                </button>
-                            </div>
-                        </form>
-                    @endif
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{{ route('register.step2') }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-chevron-left me-1"></i> Previous
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-check me-1"></i> Complete Registration
+                                    </button>
+                                </div>
+                            </form>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</x-layout>
+@endsection

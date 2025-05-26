@@ -66,8 +66,8 @@
                                             {{ old('internship_type') == 'full-time' ? 'selected' : '' }}>Full-time</option>
                                         <option value="part-time"
                                             {{ old('internship_type') == 'part-time' ? 'selected' : '' }}>Part-time</option>
-                                        <option value="flexible"
-                                            {{ old('internship_type') == 'flexible' ? 'selected' : '' }}>Flexible</option>
+                                        <option value="contract"
+                                            {{ old('internship_type') == 'contract' ? 'selected' : '' }}>Contract</option>
                                     </select>
                                     @error('internship_type')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -75,10 +75,11 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="duration" class="form-label">Duration (months)</label>
+                                    <label for="duration" class="form-label">Duration (months) <span
+                                            class="text-danger">*</span></label>
                                     <input type="number" class="form-control @error('duration') is-invalid @enderror"
                                         id="duration" name="duration" value="{{ old('duration') }}" min="1"
-                                        max="24">
+                                        max="24" required>
                                     @error('duration')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -136,9 +137,10 @@
                                 </div>
 
                                 <div class="col-12 mb-3">
-                                    <label for="requirements" class="form-label">Requirements & Qualifications</label>
+                                    <label for="requirements" class="form-label">Requirements & Qualifications <span
+                                            class="text-danger">*</span></label>
                                     <textarea class="form-control @error('requirements') is-invalid @enderror" id="requirements" name="requirements"
-                                        rows="4">{{ old('requirements') }}</textarea>
+                                        rows="4" required>{{ old('requirements') }}</textarea>
                                     @error('requirements')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -159,25 +161,23 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="stipend_amount" class="form-label">Stipend Amount (optional)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="text"
-                                            class="form-control @error('stipend_amount') is-invalid @enderror"
-                                            id="stipend_amount" name="stipend_amount"
-                                            value="{{ old('stipend_amount') }}">
-                                    </div>
-                                    @error('stipend_amount')
+                                    <label for="salary_range" class="form-label">Salary Range (optional)</label>
+                                    <input type="text" class="form-control @error('salary_range') is-invalid @enderror"
+                                        id="salary_range" name="salary_range" value="{{ old('salary_range') }}"
+                                        placeholder="e.g. $500-$1000 per month">
+                                    @error('salary_range')
                                         <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="skillsets" class="form-label">Required Skills (comma separated)</label>
-                                    <input type="text" class="form-control @error('skillsets') is-invalid @enderror"
-                                        id="skillsets" name="skillsets" value="{{ old('skillsets') }}"
+                                    <label for="skills_required" class="form-label">Required Skills (comma
+                                        separated)</label>
+                                    <input type="text"
+                                        class="form-control @error('skills_required') is-invalid @enderror"
+                                        id="skills_required" name="skills_required" value="{{ old('skills_required') }}"
                                         placeholder="e.g. JavaScript, React, UI/UX">
-                                    @error('skillsets')
+                                    @error('skills_required')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>

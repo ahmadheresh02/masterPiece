@@ -22,16 +22,21 @@ class InternshipListing extends Model
         'location',
         'duration',
         'requirements',
+        'responsibilities',
         'application_deadline',
         'skills_required',
         'is_remote',
         'is_active',
-        'company_id'
+        'is_paid',
+        'company_id',
+        'internship_type',
+        'salary_range'
     ];
 
     protected $casts = [
         'is_remote' => 'boolean',
         'is_active' => 'boolean',
+        'is_paid' => 'boolean',
         'skills_required' => 'array',
         'application_deadline' => 'date'
     ];

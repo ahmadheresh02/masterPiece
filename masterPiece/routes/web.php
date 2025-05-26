@@ -63,6 +63,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/internships/{internship}/apply', [App\Http\Controllers\ApplicationController::class, 'create'])->name('applications.create');
     Route::post('/internships/{internship}/apply', [App\Http\Controllers\ApplicationController::class, 'store'])->name('applications.store');
     Route::post('/internships/{internship}/quick-apply', [App\Http\Controllers\ApplicationController::class, 'quickApply'])->name('applications.quickApply');
+    Route::get('/internships/{internship}/apply-direct', [App\Http\Controllers\InternshipListingController::class, 'applyDirect'])->name('internships.applyDirect');
     Route::get('/applications', [App\Http\Controllers\ApplicationController::class, 'userApplications'])->name('applications.index');
     Route::delete('/applications/{application}', [App\Http\Controllers\ApplicationController::class, 'destroy'])->name('applications.destroy');
 });

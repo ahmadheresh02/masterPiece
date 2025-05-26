@@ -1,99 +1,95 @@
-<x-layout>
-    <div class="hero-section">
-        <div class="container mx-auto py-8">
-            <div class="max-w-xl mx-auto px-4">
-                <div class="search-container glass-card p-6">
-                    <h1 class="search-title mb-6">Sign In</h1>
+@extends('layouts.app')
 
-                    @if ($errors->any())
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+@section('content')
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="auth-wrapper">
+                    <div class="auth-header">
+                        <h1>Welcome Back</h1>
+                        <p>Sign in to access your InternConnect account</p>
+                    </div>
 
-                    @if (session('success'))
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                            {{ session('success') }}
-                        </div>
-                    @endif
+                    <div class="auth-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger mb-4">
+                                <ul class="mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-                        <div class="space-y-4">
-                            <div>
-                                <label for="email"
-                                    class="block text-sm font-medium text-[var(--text-dark)] mb-1">Email Address</label>
-                                <div class="search-input-wrapper">
-                                    <i class="fas fa-envelope search-icon-left"></i>
+                        @if (session('success'))
+                            <div class="alert alert-success mb-4">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
+                        <form method="POST" action="{{ route('login') }}">
+                            @csrf
+
+                            <div class="form-group mb-3">
+                                <div class="form-floating">
                                     <input type="email" name="email" id="email" value="{{ old('email') }}"
-                                        class="search-input @error('email') border-red-500 @enderror" required
-                                        autocomplete="email" autofocus>
+                                        class="form-control @error('email') is-invalid @enderror"
+                                        placeholder="Email address" required autofocus>
+                                    <label for="email">Email Address</label>
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('email')
-                                    <p class="text-red-500 text-xs mt-1">{{ $errors->first('email') }}</p>
-                                @enderror
                             </div>
 
-                            <div>
-                                <label for="password"
-                                    class="block text-sm font-medium text-[var(--text-dark)] mb-1">Password</label>
-                                <div class="search-input-wrapper">
-                                    <i class="fas fa-lock search-icon-left"></i>
+                            <div class="form-group mb-3">
+                                <div class="form-floating">
                                     <input type="password" name="password" id="password"
-                                        class="search-input @error('password') border-red-500 @enderror" required
-                                        autocomplete="current-password">
+                                        class="form-control @error('password') is-invalid @enderror" placeholder="Password"
+                                        required>
+                                    <label for="password">Password</label>
+                                    @error('password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('password')
-                                    <p class="text-red-500 text-xs mt-1">{{ $errors->first('password') }}</p>
-                                @enderror
                             </div>
 
-                            <div class="flex items-center">
-                                <input type="checkbox" name="remember" id="remember"
-                                    {{ old('remember') ? 'checked' : '' }} class="form-check-input">
-                                <label for="remember"
-                                    class="form-check-label ml-2 text-sm font-medium text-[var(--text-dark)]">
-                                    Remember Me
-                                </label>
-                            </div>
-
-                            <div class="flex flex-col md:flex-row items-center justify-between mt-6">
-                                <button type="submit" class="search-btn w-full md:w-auto mb-3 md:mb-0">
-                                    Sign In
-                                </button>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="remember" id="remember"
+                                        {{ old('remember') ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="remember">
+                                        Remember Me
+                                    </label>
+                                </div>
 
                                 @if (Route::has('password.request'))
-                                    <a class="text-[var(--primary-color)] hover:underline text-sm"
-                                        href="{{ route('password.request') }}">
-                                        Forgot Your Password?
+                                    <a class="text-decoration-none" href="{{ route('password.request') }}">
+                                        Forgot Password?
                                     </a>
                                 @endif
                             </div>
 
-                            <div class="border-t border-[var(--border-color)] pt-4 mt-6 text-center">
-                                <p class="text-[var(--text-light)] text-sm">
-                                    Don't have an account yet?
-                                </p>
-                                <div class="flex flex-col sm:flex-row justify-center gap-2 mt-2">
-                                    <a href="{{ route('register.step1') }}"
-                                        class="text-[var(--primary-color)] hover:underline font-medium">
-                                        Register as a Student
-                                    </a>
-                                    <span class="hidden sm:inline text-[var(--text-light)]">|</span>
-                                    <a href="{{ route('company.register') }}"
-                                        class="text-[var(--primary-color)] hover:underline font-medium">
-                                        Register as a Company
-                                    </a>
-                                </div>
+                            <button type="submit" class="btn btn-auth">
+                                Sign In
+                            </button>
+                        </form>
+
+                        <div class="auth-divider">
+                            <span>or sign in with</span>
+                        </div>
+
+                        <div class="auth-footer">
+                            <p>Don't have an account?</p>
+                            <div class="d-flex gap-3 justify-content-center">
+                                <a href="{{ route('register.step1') }}">Register as a Student</a>
+                                <span class="text-muted">|</span>
+                                <a href="{{ route('company.register') }}">Register as a Company</a>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</x-layout>
+@endsection
